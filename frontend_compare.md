@@ -4,9 +4,10 @@
 
 ---
 
-[legacy访问链接](https://repo.waterman.xin/share/legacy_frontend/clients.html)
-[MVP访问链接 协调员视角](https://repo.waterman.xin/share/coordinator/event_center.html)
-[MVP访问链接 企业操作员视角](https://repo.waterman.xin/share/operator/node_status.html)
+- [legacy访问链接](https://repo.waterman.xin/share/legacy_frontend/clients.html)<br>
+
+- [MVP访问链接 协调员视角](https://repo.waterman.xin/share/coordinator/event_center.html)<br>
+- [MVP访问链接 企业操作员视角](https://repo.waterman.xin/share/operator/node_status.html)<br>
 
 ## 一、两个方案概述
 
