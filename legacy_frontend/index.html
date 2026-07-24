@@ -1,0 +1,1270 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FedPKDA · 隐私联邦大屏</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        min-height: 100%;
+      }
+      body {
+        position: relative;
+        font-family:
+          "Inter",
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background-color: #070b12;
+        background-image:
+          radial-gradient(circle at 15% 12%, rgba(88, 166, 255, 0.16), transparent 18%),
+          radial-gradient(circle at 82% 18%, rgba(63, 185, 128, 0.12), transparent 16%),
+          linear-gradient(180deg, #070b12 0%, #06080f 100%);
+        color: #e6edf3;
+        min-height: 100vh;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        letter-spacing: 0.2px;
+        background-attachment: fixed;
+      }
+      body::-webkit-scrollbar {
+        width: 10px;
+      }
+      body::-webkit-scrollbar-track {
+        background: rgba(13, 17, 23, 0.25);
+      }
+      body::-webkit-scrollbar-thumb {
+        background: rgba(88, 166, 255, 0.28);
+        border-radius: 999px;
+        border: 2px solid rgba(13, 17, 23, 0.5);
+      }
+      body::-webkit-scrollbar-thumb:hover {
+        background: rgba(88, 166, 255, 0.42);
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(circle at 18% 8%, rgba(88, 166, 255, 0.18), transparent 16%),
+          radial-gradient(circle at 75% 20%, rgba(248, 81, 73, 0.09), transparent 12%),
+          radial-gradient(circle at 50% 88%, rgba(99, 102, 241, 0.08), transparent 14%);
+        pointer-events: none;
+        z-index: 0;
+      }
+      ::selection {
+        background: rgba(88, 166, 255, 0.22);
+        color: #fff;
+      }
+
+      /* 顶部状态栏升级磨砂+分层阴影 */
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 44px;
+        background: rgba(13, 17, 23, 0.72);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(33, 38, 45, 0.45);
+        flex-shrink: 0;
+        z-index: 10;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+      }
+      .status-bar .logo {
+        font-size: 1.24rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .status-bar .logo i {
+        color: #58a6ff;
+        filter: drop-shadow(0 0 6px rgba(88, 166, 255, 0.35));
+      }
+      .status-bar .logo span {
+        color: #58a6ff;
+      }
+      .status-right {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+        font-size: 0.86rem;
+        color: #8b949e;
+      }
+      .status-right .live {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #3fb950;
+      }
+      .status-right .live .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #3fb950;
+        box-shadow: 0 0 8px #3fb950;
+        animation: pulse 1.5s infinite ease-in-out;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.3;
+          transform: scale(0.85);
+        }
+      }
+      .status-right .badge {
+        background: rgba(31, 41, 55, 0.45);
+        padding: 5px 16px;
+        border-radius: 24px;
+        border: 1px solid rgba(48, 54, 61, 0.5);
+        font-size: 0.76rem;
+        backdrop-filter: blur(4px);
+      }
+      .enter-btn {
+        background: linear-gradient(135deg, #238636, #289940);
+        color: #fff;
+        border: none;
+        padding: 9px 22px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.86rem;
+        cursor: pointer;
+        transition: all 0.24s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        box-shadow: 0 3px 12px rgba(35, 134, 54, 0.22);
+      }
+      .enter-btn:hover {
+        background: linear-gradient(135deg, #2ea043, #34b04f);
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 6px 18px rgba(35, 134, 54, 0.32);
+      }
+
+      /* 主容器全局渐变景深 */
+      .dashboard {
+        position: relative;
+        flex: 1;
+        padding: 32px 44px 36px;
+        overflow-y: auto;
+        background: linear-gradient(180deg, rgba(7, 11, 18, 0.94), rgba(8, 12, 20, 0.96));
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+        border-top: 1px solid rgba(255, 255, 255, 0.03);
+        box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4);
+      }
+      .dashboard::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(circle at 15% 15%, rgba(88, 166, 255, 0.12), transparent 14%),
+          radial-gradient(circle at 86% 18%, rgba(248, 81, 73, 0.08), transparent 10%);
+      }
+      .dashboard::-webkit-scrollbar {
+        width: 6px;
+      }
+      .dashboard::-webkit-scrollbar-track {
+        background: rgba(13, 17, 23, 0.3);
+      }
+      .dashboard::-webkit-scrollbar-thumb {
+        background: rgba(48, 54, 61, 0.65);
+        border-radius: 10px;
+      }
+      .dashboard::-webkit-scrollbar-thumb:hover {
+        background: rgba(62, 69, 77, 0.9);
+      }
+
+      /* 头部Hero区域 */
+      .hero {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 18px;
+        padding: 26px 28px;
+        border-radius: 28px;
+        background: rgba(10, 14, 22, 0.78);
+        border: 1px solid rgba(88, 166, 255, 0.12);
+        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+      }
+      .hero h1 {
+        font-size: 2.1rem;
+        font-weight: 700;
+        letter-spacing: -0.6px;
+        background: linear-gradient(135deg, #f0f6fc 0%, #58a6ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero .sub {
+        color: #8b949e;
+        font-size: 0.96rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        max-width: 680px;
+      }
+      .hero .sub i {
+        color: #58a6ff;
+        filter: drop-shadow(0 0 4px rgba(88, 166, 255, 0.25));
+      }
+
+      /* 顶部统计卡片网格 */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 22px;
+      }
+      .stat-card {
+        position: relative;
+        background: rgba(13, 17, 23, 0.65);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(33, 38, 45, 0.48);
+        border-radius: 24px;
+        padding: 24px 24px 26px;
+        transition: all 0.28s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      }
+      .stat-card:hover {
+        border-color: rgba(88, 166, 255, 0.35);
+        transform: translateY(-4px);
+        box-shadow:
+          0 14px 42px rgba(0, 0, 0, 0.28),
+          0 0 18px rgba(88, 166, 255, 0.08);
+      }
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 44px;
+        height: 4px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #58a6ff, #3fb950);
+        opacity: 0.65;
+      }
+      .stat-card .label {
+        font-size: 0.82rem;
+        color: #8b949e;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+      .stat-card .label i {
+        color: #58a6ff;
+      }
+      .stat-card .value {
+        font-size: 2.4rem;
+        font-weight: 700;
+        letter-spacing: -1.2px;
+        line-height: 1.1;
+        color: #f8fbff;
+      }
+      .stat-card .change {
+        font-size: 0.76rem;
+        color: #3fb950;
+        margin-top: 6px;
+      }
+      .stat-card .change.down {
+        color: #f85149;
+      }
+
+      /* 中间双栏布局 */
+      .mid-grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 24px;
+      }
+      .panel {
+        position: relative;
+        background: rgba(10, 14, 22, 0.76);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(58, 96, 157, 0.14);
+        border-radius: 22px;
+        padding: 28px 28px;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        transition: all 0.26s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+      }
+      .panel:hover {
+        border-color: rgba(88, 166, 255, 0.22);
+        box-shadow: 0 16px 46px rgba(0, 0, 0, 0.28);
+        transform: translateY(-2px);
+      }
+      .panel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 22px;
+        pointer-events: none;
+        background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.03) 50%, transparent 100%);
+      }
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+      .panel-header h3 {
+        font-size: 0.98rem;
+        font-weight: 600;
+        color: #c9d1d9;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .panel-header h3 i {
+        color: #58a6ff;
+      }
+
+      /* 任务列表项 */
+      .task-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 10px;
+        margin-inline: -10px;
+        border-bottom: 1px solid rgba(33, 38, 45, 0.22);
+        cursor: pointer;
+        border-radius: 12px;
+        transition: background 0.22s, transform 0.22s;
+      }
+      .task-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+        transform: translateY(-1px);
+      }
+      .task-item:last-child {
+        border-bottom: none;
+      }
+      .task-item .info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .task-item .info .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 8px currentColor;
+      }
+      .dot.green {
+        background: #3fb950;
+      }
+      .dot.blue {
+        background: #58a6ff;
+      }
+      .dot.yellow {
+        background: #d29922;
+      }
+      .task-item .progress-text {
+        font-size: 0.82rem;
+        color: #8b949e;
+      }
+      .task-item .tag-sm {
+        background: rgba(31, 41, 55, 0.45);
+        padding: 4px 13px;
+        border-radius: 14px;
+        font-size: 0.72rem;
+        border: 1px solid rgba(48, 54, 61, 0.5);
+        backdrop-filter: blur(3px);
+      }
+      .tag-sm.primary {
+        border-color: rgba(88, 166, 255, 0.4);
+        color: #58a6ff;
+      }
+      .tag-sm.success {
+        border-color: rgba(63, 185, 80, 0.4);
+        color: #3fb950;
+      }
+      .tag-sm.warning {
+        border-color: rgba(210, 153, 34, 0.4);
+        color: #d29922;
+      }
+
+      /* 客户端行 */
+      .client-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 10px;
+        margin-inline: -10px;
+        border-bottom: 1px solid rgba(33, 38, 45, 0.22);
+        font-size: 0.86rem;
+        cursor: pointer;
+        border-radius: 12px;
+        transition: background 0.22s, transform 0.22s;
+      }
+      .client-row:hover {
+        background: rgba(255, 255, 255, 0.05);
+        transform: translateY(-1px);
+      }
+      .client-row:last-child {
+        border-bottom: none;
+      }
+      .client-row .name {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .client-row .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 6px currentColor;
+      }
+      .status-dot.online {
+        background: #3fb950;
+      }
+      .status-dot.training {
+        background: #58a6ff;
+      }
+      .status-dot.idle {
+        background: #d29922;
+      }
+      .client-row .acc {
+        color: #8b949e;
+        font-size: 0.76rem;
+      }
+
+      /* 底部双栏 */
+      .bottom-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+      }
+      .chart-bars {
+        display: flex;
+        align-items: flex-end;
+        height: 80px;
+        gap: 12px;
+        margin-top: 12px;
+        position: relative;
+      }
+      .chart-bars::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 80% 20%, rgba(88, 166, 255, 0.1), transparent 18%);
+        pointer-events: none;
+      }
+      .chart-bars .bar {
+        flex: 1;
+        border-radius: 10px 10px 0 0;
+        min-height: 8px;
+        transition: all 0.3s ease;
+        position: relative;
+        opacity: 0.9;
+        box-shadow: inset 0 -5px 10px rgba(0, 0, 0, 0.18), 0 8px 18px rgba(0, 0, 0, 0.16);
+      }
+      .chart-bars .bar:hover {
+        opacity: 1;
+        filter: brightness(1.08);
+        transform: translateY(-3px);
+      }
+      .chart-labels {
+        display: flex;
+        justify-content: space-around;
+        font-size: 0.68rem;
+        color: #8b949e;
+        margin-top: 8px;
+        letter-spacing: 0.08em;
+      }
+      /* 隐私环形进度 */
+      .privacy-ring {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        justify-content: center;
+        padding: 12px 0;
+      }
+      .ring {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: conic-gradient(#58a6ff 0% 42%, #1f2937 42% 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 0 20px rgba(88, 166, 255, 0.18);
+      }
+      .ring::before {
+        content: "";
+        position: absolute;
+        inset: 8px;
+        border-radius: 50%;
+        background: rgba(7, 11, 18, 0.95);
+      }
+      .ring .inner {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0d1117, #111827);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: #58a6ff;
+        position: relative;
+        z-index: 1;
+      }
+      .privacy-detail {
+        font-size: 0.82rem;
+        color: #8b949e;
+        line-height: 1.9;
+      }
+      .privacy-detail strong {
+        color: #e6edf3;
+      }
+
+      /* FedPKDA底部状态栏 */
+      .fedpkda-bar {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 22px;
+        padding: 18px 24px;
+        background: rgba(10, 14, 22, 0.78);
+        border-radius: 22px;
+        border: 1px solid rgba(33, 38, 45, 0.3);
+        align-items: center;
+        justify-content: space-between;
+        backdrop-filter: blur(12px);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      }
+      .fedpkda-bar::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 22px;
+        pointer-events: none;
+        background: linear-gradient(90deg, rgba(88, 166, 255, 0.08), transparent 45%, rgba(63, 185, 80, 0.05));
+      }
+      .fedpkda-bar .left {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+        flex-wrap: wrap;
+      }
+      .fedpkda-bar .left span {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.86rem;
+      }
+      .fedpkda-bar .left span strong {
+        color: #f0f6fc;
+      }
+
+      /* 响应式适配，逻辑完全不变，仅微调间距 */
+      @media (max-width: 1024px) {
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .mid-grid {
+          grid-template-columns: 1fr;
+        }
+        .bottom-grid {
+          grid-template-columns: 1fr;
+        }
+        .dashboard {
+          padding: 24px 28px;
+          gap: 24px;
+        }
+        .status-bar {
+          padding: 12px 24px;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+      }
+      @media (max-width: 640px) {
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero h1 {
+          font-size: 1.6rem;
+        }
+        .status-right .badge {
+          display: none;
+        }
+        .dashboard {
+          padding: 20px;
+        }
+        .fedpkda-bar .left {
+          gap: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 顶部状态栏 -->
+    <header class="status-bar">
+      <div class="logo">
+        <i class="fas fa-shield-alt"></i>Fed<span>PKDA</span> · 隐私联邦
+      </div>
+      <div class="status-right">
+        <span class="live"><span class="dot"></span> 实时同步</span>
+        <span class="badge"
+          ><i
+            class="fas fa-circle"
+            style="color: #3fb950; font-size: 0.4rem"
+          ></i>
+          <span id="onlineCount">5</span> 客户端在线</span
+        >
+        <span class="badge">ε = <span id="epsilonDisplay">2.4</span></span>
+        <a href="dashboard.html" class="enter-btn"
+          ><i class="fas fa-arrow-right"></i> 进入系统</a
+        >
+      </div>
+    </header>
+
+    <!-- 大屏主体 -->
+    <main class="dashboard" id="dashboardMain">
+      <!-- Hero -->
+      <div class="hero">
+        <div>
+          <h1>联邦学习 · 隐私保护动态大屏</h1>
+          <div class="sub">
+            <i class="fas fa-sync-alt fa-fw"></i> 全局状态监控 · 知识动态对齐
+            (FedPKDA) · 隐私预算 ε=<span id="epsilonHero">2.4</span>
+          </div>
+        </div>
+        <div class="sub" style="font-size: 0.8rem">
+          <i class="fas fa-clock"></i> 最后更新:
+          <span id="updateTime">刚刚</span>
+        </div>
+      </div>
+
+      <!-- 统计卡片 -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="label"><i class="fas fa-layer-group"></i> 全局轮次</div>
+          <div class="value" id="roundVal">48</div>
+          <div class="change" id="roundChange">
+            <i class="fas fa-arrow-up"></i> +2 较上轮
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="label"><i class="fas fa-bullseye"></i> 全局准确率</div>
+          <div class="value" id="accVal">93.4%</div>
+          <div class="change" id="accChange">
+            <i class="fas fa-arrow-up"></i> +0.7%
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="label"><i class="fas fa-users"></i> 活跃客户端</div>
+          <div class="value" id="activeVal">5/8</div>
+          <div class="change" id="activeChange">3 个正在训练</div>
+        </div>
+        <div class="stat-card">
+          <div class="label"><i class="fas fa-key"></i> 隐私预算 (ε)</div>
+          <div class="value" id="privacyVal">2.4</div>
+          <div class="change" style="color: #8b949e" id="privacyRemain">
+            剩余 58% · 安全
+          </div>
+        </div>
+      </div>
+
+      <!-- 中间: 任务 + 客户端 -->
+      <div class="mid-grid">
+        <!-- 活跃任务 -->
+        <div class="panel" onclick="window.location.href = 'training.html'">
+          <div class="panel-header">
+            <h3><i class="fas fa-tasks"></i> 活跃任务</h3>
+            <span
+              class="badge"
+              style="
+                background: #1f2937;
+                padding: 2px 12px;
+                border-radius: 12px;
+                font-size: 0.7rem;
+                border: 1px solid #30363d;
+              "
+              >3 进行中</span
+            >
+          </div>
+          <div
+            class="task-item"
+            onclick="
+              event.stopPropagation();
+              window.location.href = 'training.html';
+            "
+          >
+            <div class="info">
+              <span class="dot blue"></span><strong>医疗影像分类</strong>
+            </div>
+            <div>
+              <span class="progress-text"
+                >轮次 <span id="task1Round">47</span> · 4 客户端</span
+              ><span
+                class="tag-sm primary"
+                style="margin-left: 10px"
+                id="task1Progress"
+                >78%</span
+              >
+            </div>
+          </div>
+          <div
+            class="task-item"
+            onclick="
+              event.stopPropagation();
+              window.location.href = 'training.html';
+            "
+          >
+            <div class="info">
+              <span class="dot green"></span><strong>金融异常检测</strong>
+            </div>
+            <div>
+              <span class="progress-text"
+                >轮次 <span id="task2Round">12</span> · 3 客户端</span
+              ><span
+                class="tag-sm warning"
+                style="margin-left: 10px"
+                id="task2Progress"
+                >34%</span
+              >
+            </div>
+          </div>
+          <div
+            class="task-item"
+            onclick="
+              event.stopPropagation();
+              window.location.href = 'training.html';
+            "
+          >
+            <div class="info">
+              <span class="dot yellow"></span><strong>终端意图识别</strong>
+            </div>
+            <div>
+              <span class="progress-text"
+                >轮次 <span id="task3Round">32</span> · 2 客户端</span
+              ><span
+                class="tag-sm success"
+                style="margin-left: 10px"
+                id="task3Progress"
+                >100%</span
+              >
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 12px;
+              font-size: 0.75rem;
+              color: #8b949e;
+              display: flex;
+              gap: 16px;
+            "
+          >
+            <span
+              ><i
+                class="fas fa-circle"
+                style="color: #58a6ff; font-size: 0.4rem"
+              ></i>
+              平均训练时长 <span id="avgTime">2.4</span>s/轮</span
+            >
+            <span
+              ><i
+                class="fas fa-circle"
+                style="color: #3fb950; font-size: 0.4rem"
+              ></i>
+              参与客户端 <span id="participantCount">5</span>/8</span
+            >
+          </div>
+        </div>
+
+        <!-- 客户端参与 -->
+        <div class="panel" onclick="window.location.href = 'clients.html'">
+          <div class="panel-header">
+            <h3><i class="fas fa-user-friends"></i> 客户端参与</h3>
+            <span
+              class="badge"
+              style="
+                background: #1f2937;
+                padding: 2px 12px;
+                border-radius: 12px;
+                font-size: 0.7rem;
+                border: 1px solid #30363d;
+              "
+              ><span id="onlineBadge">5</span> 在线</span
+            >
+          </div>
+          <div
+            class="client-row"
+            onclick="
+              event.stopPropagation();
+              window.location.href = 'clients.html';
+            "
+          >
+            <div class="name">
+              <span class="status-dot online"></span>医疗影像-01
+            </div>
+            <span class="acc"
+              ><span id="c1acc">92.3</span>% ·
+              <span id="c1data">2.4</span>GB</span
+            >
+          </div>
+          <div
+            class="client-row"
+            onclick="
+              event.stopPropagation();
+              window.location.href = 'clients.html';
+            "
+          >
+            <div class="name">
+              <span class="status-dot training"></span>金融风控-03
+            </div>
+            <span class="acc"
+              ><span id="c2acc">89.7</span>% ·
+              <span id="c2data">1.8</span>GB</span
+            >
+          </div>
+          <div
+            class="client-row"
+            onclick="
+              event.stopPropagation();
+              window.location.href = 'clients.html';
+            "
+          >
+            <div class="name">
+              <span class="status-dot idle"></span>智能终端-A7
+            </div>
+            <span class="acc"
+              ><span id="c3acc">84.5</span>% ·
+              <span id="c3data">0.6</span>GB</span
+            >
+          </div>
+          <div
+            class="client-row"
+            onclick="
+              event.stopPropagation();
+              window.location.href = 'clients.html';
+            "
+          >
+            <div class="name">
+              <span class="status-dot online"></span>政务数据-02
+            </div>
+            <span class="acc"
+              ><span id="c4acc">95.1</span>% ·
+              <span id="c4data">3.1</span>GB</span
+            >
+          </div>
+          <div
+            class="client-row"
+            onclick="
+              event.stopPropagation();
+              window.location.href = 'clients.html';
+            "
+          >
+            <div class="name">
+              <span class="status-dot training"></span>车载感知-09
+            </div>
+            <span class="acc"
+              ><span id="c5acc">91.2</span>% ·
+              <span id="c5data">4.2</span>GB</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部: 数据分布 + 隐私 -->
+      <div class="bottom-grid">
+        <div class="panel" onclick="window.location.href = 'clients.html'">
+          <div class="panel-header">
+            <h3><i class="fas fa-chart-bar"></i> 客户端数据分布 (GB)</h3>
+          </div>
+          <div class="chart-bars" id="chartBars">
+            <div class="bar" style="height: 48px; background: #58a6ff"></div>
+            <div class="bar" style="height: 32px; background: #3fb950"></div>
+            <div class="bar" style="height: 56px; background: #d29922"></div>
+            <div class="bar" style="height: 40px; background: #a371f7"></div>
+            <div class="bar" style="height: 64px; background: #f85149"></div>
+            <div class="bar" style="height: 28px; background: #58a6ff"></div>
+            <div class="bar" style="height: 52px; background: #3fb950"></div>
+          </div>
+          <div class="chart-labels">
+            <span>医疗</span><span>金融</span><span>终端</span><span>政务</span
+            ><span>车载</span><span>IoT</span><span>边缘</span>
+          </div>
+        </div>
+
+        <!-- 隐私预算 -->
+        <div class="panel" onclick="window.location.href = 'privacy.html'">
+          <div class="panel-header">
+            <h3><i class="fas fa-shield-alt"></i> 隐私预算消耗</h3>
+          </div>
+          <div class="privacy-ring">
+            <div class="ring" id="privacyRing">
+              <div class="inner" id="privacyPercent">42%</div>
+            </div>
+            <div class="privacy-detail">
+              <div>
+                <strong>ε</strong> <span id="detailEpsilon">2.4</span> / 4.0
+              </div>
+              <div><strong>δ</strong> 1e-5</div>
+              <div>
+                <strong>剩余</strong> <span id="detailRemain">58</span>%
+              </div>
+              <div style="font-size: 0.7rem; color: #8b949e; margin-top: 4px">
+                差分隐私 · 安全聚合
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              width: 100%;
+              height: 5px;
+              background: #1f2937;
+              border-radius: 6px;
+              margin-top: 6px;
+            "
+          >
+            <div
+              id="privacyProgress"
+              style="
+                width: 42%;
+                height: 100%;
+                background: linear-gradient(90deg, #388bdd, #58a6ff);
+                border-radius: 6px;
+              "
+            ></div>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              font-size: 0.68rem;
+              color: #8b949e;
+              margin-top: 6px;
+            "
+          >
+            <span>已消耗 <span id="consumeLabel">42</span>%</span>
+            <span>阈值 85%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FedPKDA 状态条 -->
+      <div class="fedpkda-bar">
+        <div class="left">
+          <span
+            ><i class="fas fa-project-diagram" style="color: #58a6ff"></i>
+            <strong>FedPKDA 对齐</strong></span
+          >
+          <span
+            ><span
+              class="status-dot online"
+              style="width: 6px; height: 6px"
+            ></span>
+            全局原型
+            <span style="color: #3fb950" id="syncStatus">已同步</span></span
+          >
+          <span
+            ><i class="fas fa-ruler-combined" style="color: #8b949e"></i>
+            马氏距离
+            <span style="color: #e6edf3" id="mahalanobis">0.62</span></span
+          >
+          <span
+            ><i class="fas fa-sync-alt" style="color: #8b949e"></i> 本地更新
+            <span style="color: #e6edf3" id="localUpdate">5</span> 客户端</span
+          >
+          <span
+            ><i class="fas fa-shield-alt" style="color: #58a6ff"></i>
+            拉普拉斯噪声
+            <span style="color: #3fb950" id="noiseStatus">已注入</span></span
+          >
+        </div>
+        <span style="font-size: 0.75rem; color: #8b949e"
+          ><i
+            class="fas fa-circle"
+            style="color: #3fb950; font-size: 0.4rem"
+          ></i>
+          特征裁剪已启用</span
+        >
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        // ----- 动态数据模拟 (随机波动) -----
+        let round = 48;
+        let accuracy = 93.4;
+        let active = 5;
+        let total = 8;
+        let privacy = 2.4;
+        let consume = 42;
+
+        // 任务数据
+        let task1Round = 47,
+          task1Prog = 78;
+        let task2Round = 12,
+          task2Prog = 34;
+        let task3Round = 32,
+          task3Prog = 100;
+        let avgTime = 2.4;
+        let participantCnt = 5;
+
+        // 客户端数据
+        let c1acc = 92.3,
+          c1data = 2.4;
+        let c2acc = 89.7,
+          c2data = 1.8;
+        let c3acc = 84.5,
+          c3data = 0.6;
+        let c4acc = 95.1,
+          c4data = 3.1;
+        let c5acc = 91.2,
+          c5data = 4.2;
+
+        // 对齐状态
+        let mahalanobis = 0.62;
+        let localUpdateCnt = 5;
+
+        // DOM 引用
+        const roundEl = document.getElementById("roundVal");
+        const accEl = document.getElementById("accVal");
+        const activeEl = document.getElementById("activeVal");
+        const privacyEl = document.getElementById("privacyVal");
+        const percentEl = document.getElementById("privacyPercent");
+        const timeEl = document.getElementById("updateTime");
+        const epsilonHero = document.getElementById("epsilonHero");
+        const epsilonDisplay = document.getElementById("epsilonDisplay");
+        const onlineCount = document.getElementById("onlineCount");
+        const onlineBadge = document.getElementById("onlineBadge");
+        const privacyRing = document.getElementById("privacyRing");
+        const privacyProgress = document.getElementById("privacyProgress");
+        const consumeLabel = document.getElementById("consumeLabel");
+        const detailEpsilon = document.getElementById("detailEpsilon");
+        const detailRemain = document.getElementById("detailRemain");
+        const roundChange = document.getElementById("roundChange");
+        const accChange = document.getElementById("accChange");
+        const activeChange = document.getElementById("activeChange");
+        const privacyRemain = document.getElementById("privacyRemain");
+
+        // 任务
+        const t1r = document.getElementById("task1Round");
+        const t1p = document.getElementById("task1Progress");
+        const t2r = document.getElementById("task2Round");
+        const t2p = document.getElementById("task2Progress");
+        const t3r = document.getElementById("task3Round");
+        const t3p = document.getElementById("task3Progress");
+        const avgTimeEl = document.getElementById("avgTime");
+        const participantCntEl = document.getElementById("participantCount");
+
+        // 客户端
+        const c1a = document.getElementById("c1acc"),
+          c1d = document.getElementById("c1data");
+        const c2a = document.getElementById("c2acc"),
+          c2d = document.getElementById("c2data");
+        const c3a = document.getElementById("c3acc"),
+          c3d = document.getElementById("c3data");
+        const c4a = document.getElementById("c4acc"),
+          c4d = document.getElementById("c4data");
+        const c5a = document.getElementById("c5acc"),
+          c5d = document.getElementById("c5data");
+
+        // 对齐
+        const mahalEl = document.getElementById("mahalanobis");
+        const localUpdateEl = document.getElementById("localUpdate");
+
+        // 辅助: 随机波动
+        function randDelta(base, range) {
+          return (Math.random() - 0.5) * range;
+        }
+
+        function clamp(v, min, max) {
+          return Math.min(max, Math.max(min, v));
+        }
+
+        function updateDisplay() {
+          // 轮次: 随机 ±1，但不低于 40
+          round = clamp(round + randDelta(1, 1.8), 40, 65);
+          // 准确率: 91~96
+          accuracy = clamp(accuracy + randDelta(0.3, 0.6), 91, 96);
+          // 活跃客户端: 3~7
+          active = clamp(Math.round(active + randDelta(0.5, 1.5)), 3, 7);
+          // 隐私预算: 1.8~3.0
+          privacy = clamp(privacy + randDelta(0.1, 0.25), 1.8, 3.0);
+          // 消耗: 20~85
+          consume = clamp(consume + randDelta(1.5, 3.5), 20, 85);
+
+          // 任务轮次
+          task1Round = clamp(task1Round + randDelta(0.8, 1.5), 30, 60);
+          task1Prog = clamp(task1Prog + randDelta(2, 5), 30, 98);
+          task2Round = clamp(task2Round + randDelta(0.5, 1.2), 5, 25);
+          task2Prog = clamp(task2Prog + randDelta(3, 6), 10, 80);
+          task3Round = clamp(task3Round + randDelta(0.3, 0.8), 20, 45);
+          task3Prog = clamp(task3Prog + randDelta(0.5, 2), 80, 100);
+          avgTime = clamp(avgTime + randDelta(0.1, 0.4), 1.2, 3.8);
+          participantCnt = clamp(
+            Math.round(participantCnt + randDelta(0.3, 1.2)),
+            3,
+            7,
+          );
+
+          // 客户端准确率/数据量
+          c1acc = clamp(c1acc + randDelta(0.3, 0.7), 88, 95);
+          c1data = clamp(c1data + randDelta(0.05, 0.2), 1.5, 3.5);
+          c2acc = clamp(c2acc + randDelta(0.3, 0.7), 86, 93);
+          c2data = clamp(c2data + randDelta(0.05, 0.15), 1.0, 2.8);
+          c3acc = clamp(c3acc + randDelta(0.3, 0.7), 82, 89);
+          c3data = clamp(c3data + randDelta(0.03, 0.1), 0.3, 1.2);
+          c4acc = clamp(c4acc + randDelta(0.2, 0.5), 92, 97);
+          c4data = clamp(c4data + randDelta(0.05, 0.2), 2.0, 4.0);
+          c5acc = clamp(c5acc + randDelta(0.3, 0.7), 88, 94);
+          c5data = clamp(c5data + randDelta(0.1, 0.3), 3.0, 5.5);
+
+          // 对齐
+          mahalanobis = clamp(mahalanobis + randDelta(0.02, 0.06), 0.4, 0.85);
+          localUpdateCnt = clamp(
+            Math.round(localUpdateCnt + randDelta(0.3, 1.2)),
+            3,
+            7,
+          );
+
+          // ---- 更新 DOM ----
+          roundEl.textContent = Math.round(round);
+          accEl.textContent = accuracy.toFixed(1) + "%";
+          activeEl.textContent = Math.round(active) + "/" + total;
+          privacyEl.textContent = privacy.toFixed(1);
+          percentEl.textContent = Math.round(consume) + "%";
+          epsilonHero.textContent = privacy.toFixed(1);
+          epsilonDisplay.textContent = privacy.toFixed(1);
+          onlineCount.textContent = Math.round(active);
+          onlineBadge.textContent = Math.round(active);
+          detailEpsilon.textContent = privacy.toFixed(1);
+          detailRemain.textContent = Math.round(100 - consume);
+          consumeLabel.textContent = Math.round(consume);
+
+          // 环形图
+          privacyRing.style.background = `conic-gradient(#58a6ff 0% ${consume}%, #1f2937 ${consume}% 100%)`;
+          privacyProgress.style.width = Math.round(consume) + "%";
+
+          // 变化指示
+          const rDelta = (round - 48).toFixed(1);
+          roundChange.innerHTML =
+            (rDelta >= 0
+              ? '<i class="fas fa-arrow-up"></i> +'
+              : '<i class="fas fa-arrow-down"></i> ') +
+            Math.abs(rDelta) +
+            " 较上轮";
+          roundChange.className = "change" + (rDelta < 0 ? " down" : "");
+          const aDelta = (accuracy - 93.4).toFixed(1);
+          accChange.innerHTML =
+            (aDelta >= 0
+              ? '<i class="fas fa-arrow-up"></i> +'
+              : '<i class="fas fa-arrow-down"></i> ') +
+            Math.abs(aDelta) +
+            "%";
+          accChange.className = "change" + (aDelta < 0 ? " down" : "");
+          const activeDelta = active - 5;
+          activeChange.textContent =
+            activeDelta > 0
+              ? activeDelta + " 个正在训练"
+              : Math.abs(activeDelta) + " 个空闲";
+          activeChange.className = "change" + (activeDelta < 0 ? " down" : "");
+          const remain = 100 - consume;
+          privacyRemain.textContent =
+            "剩余 " +
+            Math.round(remain) +
+            "% · " +
+            (remain > 30 ? "安全" : "注意");
+
+          // 任务
+          t1r.textContent = Math.round(task1Round);
+          t1p.textContent = Math.round(task1Prog) + "%";
+          t2r.textContent = Math.round(task2Round);
+          t2p.textContent = Math.round(task2Prog) + "%";
+          t3r.textContent = Math.round(task3Round);
+          t3p.textContent = Math.round(task3Prog) + "%";
+          avgTimeEl.textContent = avgTime.toFixed(1);
+          participantCntEl.textContent = Math.round(participantCnt);
+
+          // 客户端
+          c1a.textContent = c1acc.toFixed(1);
+          c1d.textContent = c1data.toFixed(1);
+          c2a.textContent = c2acc.toFixed(1);
+          c2d.textContent = c2data.toFixed(1);
+          c3a.textContent = c3acc.toFixed(1);
+          c3d.textContent = c3data.toFixed(1);
+          c4a.textContent = c4acc.toFixed(1);
+          c4d.textContent = c4data.toFixed(1);
+          c5a.textContent = c5acc.toFixed(1);
+          c5d.textContent = c5data.toFixed(1);
+
+          // 对齐
+          mahalEl.textContent = mahalanobis.toFixed(2);
+          localUpdateEl.textContent = Math.round(localUpdateCnt);
+
+          // 更新时间
+          const now = new Date();
+          timeEl.textContent = now.toLocaleTimeString("zh-CN", {
+            hour12: false,
+          });
+
+          // 更新柱状图（随机变化）
+          const bars = document.querySelectorAll(".chart-bars .bar");
+          const heights = [48, 32, 56, 40, 64, 28, 52];
+          const colors = [
+            "#58a6ff",
+            "#3fb950",
+            "#d29922",
+            "#a371f7",
+            "#f85149",
+            "#58a6ff",
+            "#3fb950",
+          ];
+          bars.forEach((bar, idx) => {
+            let newH = heights[idx] + randDelta(4, 8);
+            newH = clamp(newH, 18, 80);
+            bar.style.height = newH + "px";
+            bar.style.background = colors[idx % colors.length];
+          });
+        }
+
+        // 初始更新
+        updateDisplay();
+        // 每 2.2 秒更新
+        setInterval(updateDisplay, 2200);
+
+        // 点击卡片跳转 (已在HTML中处理)
+      })();
+    </script>
+  </body>
+</html>
