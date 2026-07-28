@@ -27,9 +27,15 @@
 
 ```
 ├── README.md
-├── frontend_plan.md              # 产品设计方案（角色、页面、算法映射）
-├── frontend_analysis.md          # 前端交互界面分析
-├── practical_plan.md             # 对外项目计划
+├── docs/                          # 文档中心（比赛评审查看入口）
+│   ├── 01-index.md               # 文档索引
+│   ├── 02-system-overview.md     # 系统概述
+│   ├── 03-five-breakthroughs.md  # 五大技术突破
+│   ├── 04-role-design.md         # 角色设计与页面架构
+│   ├── 05-system-architecture.md # 系统架构与数据流
+│   ├── 06-competition-plan.md    # 比赛交付计划
+│   ├── 07-frontend-comparison.md # 前端方案对比
+│   └── 08-appendix-research.md   # 调研附录
 ├── legacy_frontend/              # 原有前端（参考，不采用）
 ├── MVP_frontend/
 │   ├── dark/                     # 暗色主题原型
@@ -55,10 +61,12 @@
 
 ---
 
-## 重点(NEED TO CHECK)
+## 快速导航
 
-[legacy <-> MVP 前端对比](./frontend_compare.md)
-
-## 前端计划
-
-[frontend_plan](./frontend_plan.md)
+- **架构白皮书入口** → [`docs/01-index.md`](./docs/01-index.md)
+- **系统概述** → [`docs/02-system-overview.md`](./docs/02-system-overview.md)
+- **五大技术突破** → [`docs/03-five-breakthroughs.md`](./docs/03-five-breakthroughs.md)
+- **角色设计与页面架构** → [`docs/04-role-design.md`](./docs/04-role-design.md)
+- **系统架构与数据流** → [`docs/05-system-architecture.md`](./docs/05-system-architecture.md)
+- **前端方案对比** → [`docs/07-frontend-comparison.md`](./docs/07-frontend-comparison.md)
+- **交互原型** → `MVP_frontend/light/`
