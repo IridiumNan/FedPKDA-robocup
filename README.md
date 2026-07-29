@@ -68,5 +68,7 @@
 - **五大技术突破** → [`docs/03-five-breakthroughs.md`](./docs/03-five-breakthroughs.md)
 - **角色设计与页面架构** → [`docs/04-role-design.md`](./docs/04-role-design.md)
 - **系统架构与数据流** → [`docs/05-system-architecture.md`](./docs/05-system-architecture.md)
-- **前端方案对比** → [`docs/07-frontend-comparison.md`](./docs/07-frontend-comparison.md)
+- **前端方案对比** → [`docs/07-frontend-comparison.md`](./docs/07-frontend-comparison.md) <- 当前的UI demo访问链接请看这里
 - **交互原型** → `MVP_frontend/light/`
+
+- **前端参考提示** → [`pending/ui_design.md`](./pending/ui_design.md)
