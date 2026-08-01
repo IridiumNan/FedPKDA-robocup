@@ -1,60 +1,88 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>训练控制 · FedPKDA</title>
-<link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>训练控制 · 机构运营员 · FedPKDA</title>
+<link rel="stylesheet" href="../style.css" />
 </head>
-<body class="layout">
+<body class="layout risk-dashboard fed-dashboard">
 <aside class="sidebar">
-  <div class="sidebar-logo"><i class="fas fa-shield-haltered"></i>Fed<span>PKDA</span></div>
+  <div class="sidebar-logo"><i class="fas fa-shield-halved"></i>Fed<span>PKDA</span></div>
   <nav class="sidebar-nav">
+    <a href="../index.html" class="nav-item"><i class="fas fa-house"></i>平台概览</a>
     <a href="node_status.html" class="nav-item"><i class="fas fa-server"></i>节点状态</a>
     <a href="training.html" class="nav-item active"><i class="fas fa-microchip"></i>训练控制</a>
     <a href="architecture.html" class="nav-item"><i class="fas fa-project-diagram"></i>系统架构</a>
+    <a href="../coordinator/event_center.html" class="nav-item"><i class="fas fa-right-left"></i>切换协调员端</a>
   </nav>
-  <div class="sidebar-footer"><span class="status-dot online"></span>系统运行中 · 机构运营员</div>
+  <div class="sidebar-footer"><span class="status-dot online"></span>机构运营员 · 本地参数</div>
 </aside>
-
 <main class="main">
   <div class="page-header">
-    <div><h1><i class="fas fa-microchip"></i>训练控制</h1><div class="sub"><i class="fas fa-info-circle"></i>本机构训练状态与本地参数 · 调整后下轮生效</div></div>
+    <div><h1><i class="fas fa-microchip"></i>训练控制</h1><div class="sub">本机构训练状态、本地参数与全局结果对比 · 调整仅影响本节点</div></div>
     <span class="badge badge-green"><i class="fas fa-building"></i>省农商行清算中心</span>
   </div>
 
-  <div class="grid-3">
-    <div class="card stat-card accent-blue"><div class="card-h"><i class="fas fa-layer-group"></i>全局轮次</div><div class="stat-number">38<span class="stat-unit"> / 40</span></div><div class="stat-label">每轮 4.2 min · 剩余 ~8 min</div></div>
-    <div class="card stat-card accent-success"><div class="card-h"><i class="fas fa-bullseye"></i>全局检测率</div><div class="stat-number">45.1<span class="stat-unit">%</span></div><div class="stat-label trend-up"><i class="fas fa-arrow-up"></i> +1.2% vs 上轮</div></div>
-    <div class="card stat-card"><div class="card-h"><i class="fas fa-chart-line"></i>φ(t) 阶段</div><div class="stat-number" style="font-size:1.3rem;">全局泛化<span class="stat-unit"> 后期</span></div><div class="meter" style="margin-top:10px;"><div class="meter-bar good" style="width:85%"></div></div><div class="stat-label">local_par=0.2 · global_par=0.8</div></div>
+  <div class="status-bar">
+    <div><span class="status-dot online"></span><strong>本地训练正常</strong><span class="status-note"><i class="fas fa-lock"></i> 原始数据留存在机构内</span></div>
+    <div class="small-meta">同步版本 v38 · 下一轮预计 14:38 开始</div>
   </div>
 
-  <div class="card">
-    <div class="card-h"><i class="fas fa-chart-line"></i>检测率趋势</div>
-    <div style="display:flex;align-items:flex-end;gap:2px;height:140px;padding:10px 0;">
-      <script>const D=[2.2,4.2,7.0,10.1,13.5,16.8,19.2,21.5,23.8,25.6,27.1,28.5,29.8,31.0,32.1,33.2,34.3,35.1,36.0,36.8,37.5,38.2,38.9,39.5,40.1,40.7,41.2,41.7,42.2,42.6,43.0,43.4,43.7,44.0,44.3,44.5,44.7,44.9,45.0,45.1];document.write(D.map((v,i)=>`<div title="轮次${i+1}: ${v}%" style="flex:1;height:${v*2.8}px;background:linear-gradient(0deg,#3b82f6,#93c5fd);border-radius:2px 2px 0 0;"></div>`).join(''))</script>
-    </div>
-    <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text-muted);margin-top:4px;"><span>轮次1</span><span>10</span><span>20</span><span>30</span><span>40</span></div>
+  <div class="grid-4">
+    <div class="card stat-card accent-blue"><div class="card-h"><i class="fas fa-layer-group"></i>全局轮次</div><div class="stat-number">38<span class="stat-unit">/40</span></div><div class="stat-label">剩余约 8 分钟</div></div>
+    <div class="card stat-card accent-success"><div class="card-h"><i class="fas fa-bullseye"></i>本地检测率</div><div class="stat-number">94.2<span class="stat-unit">%</span></div><div class="stat-label trend-up"><i class="fas fa-arrow-up"></i> +0.4pp vs 7轮均值</div></div>
+    <div class="card stat-card"><div class="card-h"><i class="fas fa-weight-hanging"></i>贡献排名</div><div class="stat-number">1<span class="stat-unit">/24</span></div><div class="stat-label">Fisher 权重 0.31</div></div>
+    <div class="card stat-card"><div class="card-h"><i class="fas fa-shield-virus"></i>隐私预算</div><div class="stat-number">42<span class="stat-unit">%</span></div><div class="stat-label trend-up">ε=2.4 · 安全</div></div>
   </div>
 
   <div class="grid-2">
-    <div class="card">
-      <div class="card-h"><i class="fas fa-chart-bar"></i>本地 vs 全局对比 · 省农商行清算中心</div>
-      <div class="grid-2" style="margin-bottom:12px;">
-        <div class="stat-card"><div class="card-h">本地检测率</div><div class="stat-number">94.2<span class="stat-unit">%</span></div><div class="stat-label trend-down"><i class="fas fa-arrow-down"></i> -1.6% vs 全局</div></div>
-        <div class="stat-card"><div class="card-h">Fisher 权重排名</div><div class="stat-number">1<span class="stat-unit">/24</span></div><div class="stat-label trend-up"><i class="fas fa-arrow-up"></i> +0.02 vs 上轮</div></div>
+    <section class="card line-chart-card">
+      <div class="card-h card-h-split"><span><i class="fas fa-chart-line"></i>本地与全局趋势</span><span class="badge badge-green">本地稳定领先</span></div>
+      <svg class="area-chart" viewBox="0 0 760 220" preserveAspectRatio="none" aria-label="本地与全局检测率趋势图">
+        <defs>
+          <linearGradient id="localArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.24"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/></linearGradient>
+          <linearGradient id="globalArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#2563eb" stop-opacity="0.14"/><stop offset="100%" stop-color="#2563eb" stop-opacity="0.01"/></linearGradient>
+        </defs>
+        <path d="M0,190 L40,174 L80,158 L120,138 L160,121 L200,108 L240,96 L280,86 L320,78 L360,70 L400,64 L440,58 L480,52 L520,48 L560,44 L600,40 L640,36 L680,34 L720,38 L760,44 L760,220 L0,220 Z" fill="url(#localArea)"/>
+        <path d="M0,190 L40,174 L80,158 L120,138 L160,121 L200,108 L240,96 L280,86 L320,78 L360,70 L400,64 L440,58 L480,52 L520,48 L560,44 L600,40 L640,36 L680,34 L720,38 L760,44" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>
+        <path d="M0,210 L40,205 L80,198 L120,190 L160,181 L200,172 L240,164 L280,154 L320,145 L360,136 L400,128 L440,120 L480,112 L520,104 L560,96 L600,88 L640,82 L680,78 L720,72 L760,66 L760,220 L0,220 Z" fill="url(#globalArea)"/>
+        <path d="M0,210 L40,205 L80,198 L120,190 L160,181 L200,172 L240,164 L280,154 L320,145 L360,136 L400,128 L440,120 L480,112 L520,104 L560,96 L600,88 L640,82 L680,78 L720,72 L760,66" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 7"/>
+      </svg>
+      <div class="chart-legend"><span><i class="legend-dot" style="background:#10b981"></i>本地检测率 94.2%</span><span><i class="legend-dot" style="background:#2563eb"></i>全局检测率 45.1%</span><span>历史峰值：95.8%</span></div>
+    </section>
+
+    <section class="card">
+      <div class="card-h"><i class="fas fa-sliders-h"></i>本地参数控制</div>
+      <div class="control-stack">
+        <div class="control-item"><div class="control-head"><strong>Noise Injection</strong><span class="control-value" id="noiseValue">0.05</span></div><input id="noiseRange" type="range" min="0" max="20" value="5" style="width:100%;" oninput="syncLocalControl('noise')" /><div class="control-feedback" id="noiseFeedback">隐私保护处于温和档位，对检测率影响较小。</div></div>
+        <div class="control-item"><div class="control-head"><strong>Local Epochs</strong><span class="control-value" id="epochValue">5</span></div><input id="epochRange" type="range" min="1" max="20" value="5" style="width:100%;" oninput="syncLocalControl('epoch')" /><div class="control-feedback" id="epochFeedback">当前训练强度适中，适合稳定参与聚合。</div></div>
+        <div class="control-item"><div class="control-head"><strong>Participation Mode</strong><span class="control-value" id="modeValue">训练+评估</span></div><select id="modeSelect" class="form-select" onchange="syncLocalControl('mode')"><option>训练+评估</option><option>仅训练</option><option>仅评估</option><option>空闲</option></select><div class="control-feedback" id="modeFeedback">本节点将提交训练更新并返回评估结果。</div></div>
       </div>
-      <div style="font-size:0.74rem;color:var(--text-muted);">本机构对全局模型贡献度排名第一，本地数据质量优秀。</div>
-    </div>
-    <div class="card">
-      <div class="card-h"><i class="fas fa-sliders-h"></i>本地参数</div>
-      <div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:2px;"><span>噪声注入强度</span><span style="color:var(--primary);">0.05</span></div><input type="range" min="0" max="20" value="5" style="width:100%;" /><div style="font-size:0.7rem;color:var(--text-muted);">越高隐私越强，可能影响模型效果</div></div>
-      <div style="margin-bottom:12px;"><div style="font-size:0.82rem;margin-bottom:2px;font-weight:500;">本地训练轮次 / 每全局轮</div><input type="number" value="5" min="1" max="20" style="width:100%;padding:8px 12px;border-radius:8px;background:#f9fafb;border:1px solid var(--border-color);color:var(--text-main);font-size:0.84rem;" /></div>
-      <div style="margin-bottom:14px;"><div style="font-size:0.82rem;margin-bottom:2px;font-weight:500;">参与模式</div><select style="width:100%;padding:8px 12px;border-radius:8px;background:#f9fafb;border:1px solid var(--border-color);color:var(--text-main);font-size:0.84rem;"><option>训练+评估</option><option>仅训练</option><option>仅评估</option><option>空闲</option></select></div>
-      <button class="btn btn-primary" onclick="T('本地参数已更新')"><i class="fas fa-check"></i>保存本地参数</button>
-    </div>
+      <div class="operation-bar" style="margin-top:16px;"><span class="small-meta">本地参数不会改变联盟全局策略，将在下一轮生效。</span><button class="btn btn-primary" onclick="toast('本地参数已保存，将在下一轮生效')"><i class="fas fa-check"></i>保存本地参数</button></div>
+    </section>
+  </div>
+
+  <div class="grid-2">
+    <section class="card status-surface success">
+      <div class="card-h card-h-split"><span><i class="fas fa-chart-simple"></i>训练质量摘要</span><span class="tag success">高贡献</span></div>
+      <table class="table"><tr><td class="info-label">本地损失</td><td class="info-value">0.312 <span class="trend-up">· 持续收敛</span></td></tr><tr><td class="info-label">模型版本差</td><td class="info-value">0（已同步）</td></tr><tr><td class="info-label">历史最高检测率</td><td class="info-value">95.8%（第 35 轮）</td></tr><tr><td class="info-label">本轮贡献解释</td><td class="info-value">高质量样本与稳定梯度</td></tr></table>
+    </section>
+    <section class="card status-surface warning">
+      <div class="card-h card-h-split"><span><i class="fas fa-triangle-exclamation"></i>风险与建议</span><span class="tag warning">关注</span></div>
+      <div class="callout warning">本地检测率较峰值下降 1.6pp。建议维持当前噪声强度，等待下一轮全局模型回传后再扩大本地轮次。</div>
+      <div class="operation-bar" style="margin-top:14px;"><span class="small-meta">建议优先观察 2 轮趋势</span><button class="btn btn-ghost" onclick="toast('已记录观察策略')"><i class="fas fa-bookmark"></i>标记观察</button></div>
+    </section>
   </div>
   <div id="toast" class="toast"></div>
 </main>
-<script>function T(m){const t=document.getElementById('toast');t.innerHTML='<i class="fas fa-check-circle"></i> '+m;t.className='toast show toast-success';setTimeout(()=>t.className='toast',2500)}</script>
+<script>
+function syncLocalControl(type){
+  if(type==='noise') { const v=document.getElementById('noiseRange').value/100; document.getElementById('noiseValue').textContent=v.toFixed(2); document.getElementById('noiseFeedback').textContent=v>0.12?'隐私保护更强，可能轻微压低本地检测率。':v<0.03?'隐私保护较弱，建议仅在低风险环境使用。':'隐私保护处于温和档位，对检测率影响较小。'; }
+  if(type==='epoch') { const v=parseInt(document.getElementById('epochRange').value,10); document.getElementById('epochValue').textContent=v; document.getElementById('epochFeedback').textContent=v>12?'训练更充分，但会增加本地耗时和过拟合风险。':v<4?'训练开销较低，但本轮贡献可能下降。':'当前训练强度适中，适合稳定参与聚合。'; }
+  if(type==='mode') { const v=document.getElementById('modeSelect').value; document.getElementById('modeValue').textContent=v; document.getElementById('modeFeedback').textContent=v==='训练+评估'?'本节点将提交训练更新并返回评估结果。':v==='仅训练'?'本节点只提交训练更新，暂不返回评估指标。':v==='仅评估'?'本节点只执行评估，可用于低负载监测。':'本节点暂不参与本轮训练与评估。'; }
+}
+function toast(msg){ const t=document.getElementById('toast'); t.innerHTML='<i class="fas fa-check-circle"></i> '+msg; t.className='toast show toast-success'; setTimeout(()=>t.className='toast',2400); }
+</script>
 </body>
 </html>

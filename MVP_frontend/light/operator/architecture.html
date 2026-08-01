@@ -1,121 +1,78 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>系统架构 · FedPKDA</title>
-<link rel="stylesheet" href="style.css" />
-<style>
-  .flow-step { display:flex; align-items:flex-start; gap:14px; padding:12px 0; border-bottom:1px solid var(--border-color); }
-  .flow-step:last-child { border-bottom:none; }
-  .flow-num { background:var(--primary); color:#fff; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; flex-shrink:0; }
-  .flow-content { flex:1; }
-  .flow-title { font-weight:600; font-size:0.88rem; margin-bottom:2px; }
-  .flow-desc { font-size:0.78rem; color:var(--text-muted); line-height:1.5; }
-  .arch-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
-  .arch-card { background:var(--primary-light); border:1px solid #bfdbfe; border-radius:10px; padding:14px 16px; text-align:center; }
-  .arch-card.dark { background:#1e293b; border-color:#334155; color:#e2e8f0; }
-  .arch-card.dark .flow-desc { color:#94a3b8; }
-  .compare-table td:first-child { font-weight:600; width:140px; }
-  .risk-row { display:flex; gap:10px; padding:8px 0; border-bottom:1px solid #f3f4f6; }
-  .risk-row:last-child { border-bottom:none; }
-  .risk-label { width:200px; font-size:0.82rem; font-weight:500; }
-  .risk-mech { flex:1; font-size:0.82rem; color:var(--text-muted); }
-  .risk-tag { font-size:0.68rem; padding:2px 8px; border-radius:4px; white-space:nowrap; }
-  .risk-tag.algo { background:var(--primary-light); color:var(--primary); }
-  .risk-tag.arch { background:#ecfdf5; color:var(--success); }
-</style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>系统架构 · 机构运营员 · FedPKDA</title>
+<link rel="stylesheet" href="../style.css" />
 </head>
-<body class="layout">
+<body class="layout risk-dashboard fed-dashboard">
 <aside class="sidebar">
-  <div class="sidebar-logo"><i class="fas fa-shield-haltered"></i>Fed<span>PKDA</span></div>
+  <div class="sidebar-logo"><i class="fas fa-shield-halved"></i>Fed<span>PKDA</span></div>
   <nav class="sidebar-nav">
+    <a href="../index.html" class="nav-item"><i class="fas fa-house"></i>平台概览</a>
     <a href="node_status.html" class="nav-item"><i class="fas fa-server"></i>节点状态</a>
     <a href="training.html" class="nav-item"><i class="fas fa-microchip"></i>训练控制</a>
     <a href="architecture.html" class="nav-item active"><i class="fas fa-project-diagram"></i>系统架构</a>
+    <a href="../coordinator/event_center.html" class="nav-item"><i class="fas fa-right-left"></i>切换协调员端</a>
   </nav>
-  <div class="sidebar-footer"><span class="status-dot online"></span>系统运行中 · 机构运营员</div>
+  <div class="sidebar-footer"><span class="status-dot online"></span>机构运营员 · 机构视角</div>
 </aside>
-
 <main class="main">
   <div class="page-header">
-    <div><h1><i class="fas fa-project-diagram"></i>系统架构</h1><div class="sub">联邦入侵检测协作平台 · 基于 FedPKDA（AAAI 2026）</div></div>
-    <span class="badge badge-green"><i class="fas fa-building"></i>省农商行清算中心</span>
+    <div><h1><i class="fas fa-project-diagram"></i>系统架构</h1><div class="sub">从机构角度理解 FedPKDA：你贡献知识，但不交出数据</div></div>
+    <span class="badge badge-green"><i class="fas fa-lock"></i>本机构视角</span>
   </div>
-
-  <div class="card">
-    <div class="card-h"><i class="fas fa-arrows-spin"></i>核心训练循环 · 每轮 8 步</div>
-    <div class="flow-step"><div class="flow-num">①</div><div class="flow-content"><div class="flow-title">本地训练</div><div class="flow-desc">各机构在自己的网络流量数据（CIC-IDS / UNSW-NB15 等）上训练本地特征提取器。数据从未离开机构服务器。</div></div></div>
-    <div class="flow-step"><div class="flow-num">②</div><div class="flow-content"><div class="flow-title">原型提取</div><div class="flow-desc">从特征提取器 <code>model.base(x)</code> 输出计算每个攻击类别的特征中心向量（512 维）。</div></div></div>
-    <div class="flow-step"><div class="flow-num">③</div><div class="flow-content"><div class="flow-title">加噪上传</div><div class="flow-desc">原型向量裁剪到 [-1,1] + 拉普拉斯噪声 → 上传中心服务器。PSNR 6.9 dB，数学上不可逆。</div></div></div>
-    <div class="flow-step"><div class="flow-num">④</div><div class="flow-content"><div class="flow-title">服务端聚合</div><div class="flow-desc">K-Means 聚类全局原型中心 → 马氏距离计算各节点偏离度 → 距离加权平均生成全局原型。异常节点（&gt;3σ）自动降权或归零。</div></div></div>
-    <div class="flow-step"><div class="flow-num">⑤</div><div class="flow-content"><div class="flow-title">全局原型广播</div><div class="flow-desc">聚合后的全局原型向量广播回所有参与节点。传输的是数学原型，不是原始数据。</div></div></div>
-    <div class="flow-step"><div class="flow-num">⑥</div><div class="flow-content"><div class="flow-title">双对齐训练</div><div class="flow-desc">本地对齐 (L<sub>LA</sub>) 保留个性化 + 全局对齐 (L<sub>GA</sub>) 吸收联盟知识。φ(t) 自动调节。</div></div></div>
-    <div class="flow-step"><div class="flow-num">⑦</div><div class="flow-content"><div class="flow-title">Fisher 加权聚合</div><div class="flow-desc">各节点 Fisher 信息矩阵自动量化模型贡献度。贡献低自动降权，搭便车无意义。</div></div></div>
-    <div class="flow-step"><div class="flow-num">⑧</div><div class="flow-content"><div class="flow-title">进入下一轮</div><div class="flow-desc">全局模型更新完成，各节点同步最新攻击检测能力。</div></div></div>
+  <div class="grid-4">
+    <div class="card stat-card accent-blue"><div class="card-h"><i class="fas fa-route"></i>本地链路</div><div class="stat-number">5</div><div class="stat-label">参与一轮训练步骤</div></div>
+    <div class="card stat-card accent-success"><div class="card-h"><i class="fas fa-database"></i>数据外发</div><div class="stat-number">0</div><div class="stat-label trend-up">原始样本不离开机构</div></div>
+    <div class="card stat-card accent-blue"><div class="card-h"><i class="fas fa-brain"></i>共享对象</div><div class="stat-number">1</div><div class="stat-label">带噪模型原型</div></div>
+    <div class="card stat-card accent-warning"><div class="card-h"><i class="fas fa-shield"></i>保护机制</div><div class="stat-number">4</div><div class="stat-label">隐私、声誉、模型、合规</div></div>
   </div>
-
-  <div class="card">
-    <div class="card-h"><i class="fas fa-sitemap"></i>角色可见边界</div>
-    <div class="arch-grid">
-      <div class="arch-card"><div style="font-size:1.2rem;margin-bottom:6px;"><i class="fas fa-eye"></i></div><div class="flow-title" style="margin-bottom:6px;">联盟协调员</div><div class="flow-desc">只能看聚合统计和脱敏事件<br>技术上拿不到任何原始数据</div></div>
-      <div class="arch-card dark"><div style="font-size:1.2rem;margin-bottom:6px;"><i class="fas fa-server"></i></div><div class="flow-title" style="margin-bottom:6px;color:#e2e8f0;">中心服务器</div><div class="flow-desc" style="color:#94a3b8;">K-Means + 马氏距离聚合<br>拿到加噪原型，聚合后不保留</div></div>
-      <div class="arch-card"><div style="font-size:1.2rem;margin-bottom:6px;"><i class="fas fa-building"></i></div><div class="flow-title" style="margin-bottom:6px;">你（机构运营员）</div><div class="flow-desc">自己所有信息完全可见<br>不能看其他机构的数据<br>完全控制自己节点</div></div>
+  <section class="card hero-card architecture-value-card">
+    <span class="badge badge-green"><i class="fas fa-building-shield"></i>运营员边界</span>
+    <div class="architecture-value-title" data-title="让数据保持私有" data-highlight="联盟知识协作" data-description="原始数据留在本地，通过隐私保护的联邦学习共享模型知识。">
+      <span class="value-title-kicker">隐私保护的智能协作</span>
+      <h2>
+        <span>让数据保持私有，</span>
+        <strong>让 <em>联盟知识</em> 协作。</strong>
+      </h2>
+      <p>运营员保留本机构完整可见性和节点控制权；FedPKDA 只共享经裁剪、加噪保护的模型知识，让多机构联合训练不以交出数据为代价。</p>
     </div>
-  </div>
+    <div class="value-proof-row">
+      <span><i class="fas fa-database"></i>原始数据不离开机构</span>
+      <span><i class="fas fa-brain"></i>共享模型知识</span>
+      <span><i class="fas fa-lock"></i>隐私预算可审计</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><i class="fas fa-route"></i>本机构参与一轮训练的路径</div>
+    <div class="flow-step"><div class="flow-num">1</div><div class="flow-content"><div class="flow-title">本地流量训练</div><div class="flow-desc">在本机构私有网络流量数据上训练，不上传样本或日志。</div></div></div>
+    <div class="flow-step"><div class="flow-num">2</div><div class="flow-content"><div class="flow-title">提取类原型</div><div class="flow-desc">将攻击知识压缩成特征中心，而不是传输原始记录。</div></div></div>
+    <div class="flow-step"><div class="flow-num">3</div><div class="flow-content"><div class="flow-title">裁剪并加噪</div><div class="flow-desc">原型先被裁剪，再加入 Laplace 噪声，降低反推风险。</div></div></div>
+    <div class="flow-step"><div class="flow-num">4</div><div class="flow-content"><div class="flow-title">接收全局原型</div><div class="flow-desc">机构只收到联盟聚合后的知识，用于增强本地检测能力。</div></div></div>
+    <div class="flow-step"><div class="flow-num">5</div><div class="flow-content"><div class="flow-title">本地更新模型</div><div class="flow-desc">通过本地对齐和全局对齐共同训练，保持个性化又吸收联盟能力。</div></div></div>
+  </section>
 
   <div class="grid-2">
-    <div class="card">
-      <div class="card-h"><i class="fas fa-gem"></i>联盟为什么对你有价值？</div>
-      <table class="table compare-table">
-        <tr><td>模型效果提升</td><td>别的机构被打过的攻击，你的模型也能防御</td></tr>
-        <tr><td>个性化保留</td><td>φ(t) 保证你的模型不会因别人的数据退化</td></tr>
-        <tr><td>搭便车被自动发现</td><td>Fisher 量化贡献，不贡献则自动降权</td></tr>
-        <tr><td>你的数据从未离开</td><td>上传的是数学原型，PSNR 6.9 不可逆</td></tr>
-      </table>
-    </div>
-    <div class="card">
-      <div class="card-h"><i class="fas fa-shield-haltered"></i>你受到什么保护？</div>
-      <div class="risk-row"><span class="risk-label">数据安全</span><span class="risk-mech">原始流量数据从未离开你的服务器</span><span class="risk-tag algo">算法</span></div>
-      <div class="risk-row"><span class="risk-label">声誉保护</span><span class="risk-mech">你被攻击的事件仅你自己可见，不暴露给任何外部方</span><span class="risk-tag arch">架构</span></div>
-      <div class="risk-row"><span class="risk-label">模型安全</span><span class="risk-mech">其他节点的污染原型被马氏距离自动隔离</span><span class="risk-tag algo">算法</span></div>
-      <div class="risk-row"><span class="risk-label">隐私合规</span><span class="risk-mech">内置拉普拉斯噪声，ε 可配置可审计</span><span class="risk-tag algo">算法</span></div>
-      <div class="risk-row"><span class="risk-label">贡献可见</span><span class="risk-mech">Fisher 权重透明量化，贡献不会被抹杀</span><span class="risk-tag algo">算法</span></div>
-    </div>
+    <section class="card">
+      <div class="card-h"><i class="fas fa-gem"></i>加入联盟的价值</div>
+      <table class="table compare-table"><tr><td>模型能力提升</td><td>其他机构遇到的攻击模式，会通过全局原型提升你的检测能力。</td></tr><tr><td>个性化保留</td><td>α(t) 让早期训练更重本地特征，后期逐渐吸收全局知识。</td></tr><tr><td>贡献可量化</td><td>Fisher 权重让高质量节点获得更高聚合影响力。</td></tr><tr><td>数据不外泄</td><td>上传的是带噪原型，不是原始流量或攻击事件。</td></tr></table>
+    </section>
+    <section class="card">
+      <div class="card-h"><i class="fas fa-shield-halved"></i>你受到的保护</div>
+      <div class="risk-row"><span class="risk-label">数据安全</span><span class="risk-mech">原始流量数据始终保留在本机构服务器。</span><span class="risk-tag algo">算法</span></div>
+      <div class="risk-row"><span class="risk-label">声誉保护</span><span class="risk-mech">本机构具体攻击事件只对运营员可见。</span><span class="risk-tag arch">架构</span></div>
+      <div class="risk-row"><span class="risk-label">模型安全</span><span class="risk-mech">异常节点会被马氏距离机制自动降权。</span><span class="risk-tag algo">算法</span></div>
+      <div class="risk-row"><span class="risk-label">隐私合规</span><span class="risk-mech">差分隐私噪声和 ε 预算可配置、可审计。</span><span class="risk-tag algo">算法</span></div>
+    </section>
   </div>
 
-  <div class="card">
+  <section class="card">
     <div class="card-h"><i class="fas fa-balance-scale"></i>与传统 ISAC 的本质区别</div>
-    <table class="table">
-      <thead><tr><th>维度</th><th>ISAC 模式</th><th>FedPKDA 模式</th></tr></thead>
-      <tbody>
-        <tr><td>传输内容</td><td>原始或脱敏事件数据</td><td>裁剪+噪声原型（PSNR 6.9，数学不可逆）</td></tr>
-        <tr><td>协调员能看什么</td><td>所有共享数据</td><td>仅聚合统计，看不到你的数据或原型</td></tr>
-        <tr><td>信任基础</td><td>法律协议 + 身份认证</td><td>算法保证"对方技术上做不了坏事"</td></tr>
-        <tr><td>异常检测</td><td>依赖人工举报</td><td>马氏距离自动计算，无需举报</td></tr>
-        <tr><td>贡献度量</td><td>无法量化</td><td>Fisher 矩阵天然量化，搭便车自动降权</td></tr>
-      </tbody>
-    </table>
-    <div style="margin-top:12px;padding:12px 16px;background:var(--primary-light);border-radius:8px;font-size:0.84rem;">
-      <strong>你的数据从未离开你的服务器。</strong>联盟学习到的是数学上的知识模式，不是你的原始流量。即使协调员被攻陷，他也拿不到任何可滥用的数据。
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><i class="fas fa-flask"></i>算法验证 · Cifar100 实验</div>
-    <table class="table">
-      <thead><tr><th>算法</th><th>模型</th><th>参数量</th><th>最佳精度</th><th>vs FedAvg</th></tr></thead>
-      <tbody>
-        <tr><td>FedAvg</td><td>CNN</td><td>5.6M</td><td>27.8%</td><td>—</td></tr>
-        <tr style="background:var(--primary-light);"><td><strong>FedPKDA</strong></td><td><strong>CNN</strong></td><td>5.6M</td><td><strong>45.1%</strong></td><td><strong style="color:var(--success);">+17.3pp</strong></td></tr>
-        <tr><td>FedAvg</td><td>ResNet-18</td><td>11.2M</td><td>24.9%</td><td>—</td></tr>
-        <tr><td><strong>FedPKDA</strong></td><td><strong>ResNet-18</strong></td><td>11.2M</td><td><strong>42.1%</strong></td><td><strong style="color:var(--success);">+17.2pp</strong></td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div style="font-size:0.76rem;color:var(--text-muted);text-align:center;padding:20px;">
-    FedPKDA · AAAI 2026 · 联邦原型知识蒸馏聚合 · 网络安全联盟入侵检测协作平台
-  </div>
+    <table class="table"><thead><tr><th>维度</th><th>传统共享</th><th>FedPKDA</th></tr></thead><tbody><tr><td>共享内容</td><td>原始事件或脱敏日志</td><td>裁剪+加噪原型</td></tr><tr><td>信任基础</td><td>协议、身份与流程</td><td>算法上拿不到可滥用数据</td></tr><tr><td>异常发现</td><td>人工上报</td><td>马氏距离自动发现</td></tr><tr><td>贡献度</td><td>难量化</td><td>Fisher 信息矩阵自动量化</td></tr></tbody></table>
+  </section>
 </main>
 </body>
 </html>

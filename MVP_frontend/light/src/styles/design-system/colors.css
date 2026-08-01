@@ -1,0 +1,33 @@
+﻿:root {
+  /* Brand */
+  --primary-color: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-soft: #EFF6FF;
+  --accent-color: #0EA5E9;
+
+  /* Semantic */
+  --success-color: #10B981;
+  --success-soft: #ECFDF5;
+  --warning-color: #F59E0B;
+  --warning-soft: #FFFBEB;
+  --danger-color: #EF4444;
+  --danger-soft: #FEF2F2;
+  --info-color: #6366F1;
+  --info-soft: #EEF2FF;
+
+  /* Surfaces */
+  --bg-color: #F8FAFC;
+  --bg-elevated: rgba(255, 255, 255, 0.86);
+  --surface-color: rgba(255, 255, 255, 0.92);
+  --surface-strong: #FFFFFF;
+  --surface-muted: #F1F5F9;
+  --border-color: rgba(148, 163, 184, 0.24);
+  --border-strong: rgba(148, 163, 184, 0.34);
+
+  /* Text */
+  --text-main: #111827;
+  --text-primary: #111827;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --text-inverse: #F8FAFC;
+}

@@ -1,0 +1,27 @@
+﻿:root {
+  --font-sans: "Inter", "Source Han Sans SC", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --layout-sidebar-width: 248px;
+  --layout-content-padding: 24px 28px 32px;
+  --layout-section-gap: 18px;
+  --layout-card-gap: 16px;
+  --layout-header-min-height: 72px;
+
+  --card-radius: 16px;
+  --card-radius-sm: 12px;
+  --card-padding: 16px;
+  --card-padding-lg: 20px;
+
+  --shadow-card: 0 18px 44px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+  --shadow-card-hover: 0 26px 60px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-control: 0 10px 22px rgba(15, 23, 42, 0.08);
+
+  --text-xs: 0.68rem;
+  --text-sm: 0.76rem;
+  --text-body: 0.88rem;
+  --text-title: 1rem;
+  --text-page: 1.55rem;
+
+  --motion-fast: 160ms ease;
+  --motion-base: 220ms ease;
+}

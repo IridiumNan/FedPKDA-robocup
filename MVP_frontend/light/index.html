@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FedPKDA · AI 联邦学习安全平台</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body class="layout risk-dashboard fed-dashboard">
+<aside class="sidebar">
+  <div class="sidebar-logo"><i class="fas fa-shield-halved"></i>Fed<span>PKDA</span></div>
+  <nav class="sidebar-nav">
+    <a href="index.html" class="nav-item active"><i class="fas fa-gauge-high"></i>平台概览</a>
+    <a href="coordinator/event_center.html" class="nav-item"><i class="fas fa-user-shield"></i>联盟协调员端</a>
+    <a href="operator/node_status.html" class="nav-item"><i class="fas fa-building-shield"></i>机构运营员端</a>
+  </nav>
+  <div class="sidebar-footer"><span class="status-dot online"></span>生产控制台 · 联盟运行中</div>
+</aside>
+
+<main class="main home-page">
+  <section class="home-hero" aria-label="FedPKDA 产品介绍">
+    <div class="home-hero-copy">
+      <span class="home-eyebrow"><i class="fas fa-lock"></i>隐私保护联邦学习平台</span>
+      <h1 class="hero-title-component" aria-label="让多机构在数据不出域的前提下，联合训练 AI 入侵检测模型。">
+        <span class="hero-title-kicker">让多机构协作</span>
+        <span class="hero-title-line">在 <em>数据不出域</em> 的前提下</span>
+        <span class="hero-title-line hero-title-primary">联合训练 <em>AI 入侵检测模型</em></span>
+      </h1>
+      <p>FedPKDA 面向金融、政务、能源和交通等多机构协作场景，通过隐私噪声、Fisher 加权、异常节点隔离和分权控制，在不共享原始数据的情况下持续优化检测模型。</p>
+      <div class="home-hero-actions">
+        <a class="btn btn-primary" href="coordinator/event_center.html"><i class="fas fa-user-shield"></i>进入协调员端</a>
+        <a class="btn btn-ghost" href="operator/node_status.html"><i class="fas fa-building-shield"></i>进入运营员端</a>
+      </div>
+      <div class="home-trust-row"><span><i class="fas fa-check-circle"></i>原始数据不离开机构</span><span><i class="fas fa-check-circle"></i>协调员仅见聚合摘要</span><span><i class="fas fa-check-circle"></i>运营员保留本地控制权</span></div>
+    </div>
+    <div class="home-hero-visual" aria-label="联邦学习节点关系图">
+      <div class="federation-canvas">
+        <svg class="federation-lines" viewBox="0 0 640 430" preserveAspectRatio="none" aria-hidden="true">
+          <defs><linearGradient id="fedLine" x1="0" x2="1"><stop offset="0%" stop-color="#2563eb" stop-opacity="0.18"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.52"/></linearGradient></defs>
+          <path d="M112 92 C230 96 246 206 320 214" />
+          <path d="M108 322 C225 312 248 226 320 214" />
+          <path d="M526 112 C446 126 402 188 320 214" />
+          <path d="M520 312 C440 298 404 236 320 214" />
+          <path d="M320 214 C392 210 430 214 492 214" class="model-line" />
+        </svg>
+        <div class="fed-node fed-node-a"><span><i class="fas fa-building-columns"></i></span><strong>金融机构 A</strong><em>本地训练</em></div>
+        <div class="fed-node fed-node-b"><span><i class="fas fa-landmark"></i></span><strong>政务机构 B</strong><em>隐私噪声</em></div>
+        <div class="fed-node fed-node-c"><span><i class="fas fa-bolt"></i></span><strong>能源机构 C</strong><em>原型上传</em></div>
+        <div class="fed-node fed-node-d"><span><i class="fas fa-train-subway"></i></span><strong>交通机构 D</strong><em>本地评估</em></div>
+        <div class="fed-core"><span><i class="fas fa-brain"></i></span><strong>联邦训练中心</strong><em>Fisher 加权聚合</em></div>
+        <div class="fed-model"><span><i class="fas fa-shield-virus"></i></span><strong>AI 检测模型</strong><em>45.1% 检测率</em></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section" aria-label="核心指标">
+    <div class="home-section-head"><div><span>Metric Dashboard</span><h2>联盟运行状态一眼可读</h2></div><p>每个指标都提供趋势、参考值和业务含义，而不是只展示数字。</p></div>
+    <div id="homeMetrics" class="home-metric-grid"></div>
+  </section>
+
+  <section class="home-section" aria-label="角色入口">
+    <div class="home-section-head"><div><span>Role Entry</span><h2>两类用户，各自拥有清晰入口</h2></div><p>协调员处理联盟级态势，运营员控制机构侧节点，权限边界在入口层就明确表达。</p></div>
+    <div id="roleEntries" class="home-role-grid"></div>
+  </section>
+
+  <section class="home-section capability-section" aria-label="平台能力">
+    <div class="home-section-head"><div><span>Platform Capability</span><h2>从数据不出域到异常检测的闭环流程</h2></div><p>用轻量流程图表达平台核心能力，帮助首次进入的用户快速理解产品价值。</p></div>
+    <div id="capabilities" class="capability-flow"></div>
+  </section>
+
+  <footer class="home-footer">
+    <div><strong>FedPKDA</strong><span>Privacy-preserving federated intrusion detection platform</span></div>
+    <div class="home-footer-links"><a href="coordinator/architecture.html">查看系统架构</a><a href="coordinator/training.html">训练控制</a><a href="operator/node_status.html">节点状态</a></div>
+  </footer>
+</main>
+<script>
+const metrics = [
+  { label:'最佳检测率', value:45.1, suffix:'%', trend:'+1.2pp', tone:'success', note:'相比上一轮训练', spark:[26,32,36,39,42,44,45] },
+  { label:'FedAvg 提升', value:17.3, prefix:'+', suffix:'pp', trend:'+17.3pp', tone:'info', note:'相比基线方法', spark:[4,7,9,11,13,15,17] },
+  { label:'参与机构', value:24, suffix:'', trend:'+3', tone:'success', note:'本周期新增机构', spark:[12,14,17,18,21,22,24] },
+  { label:'训练轮次', value:40, suffix:'', trend:'38/40', tone:'warning', note:'进行中 · 预计 8 分钟结束', spark:[8,14,18,24,31,38,40] }
+];
+const roles = [
+  { title:'联盟协调员端', badge:'全局管理中心', tone:'coordinator', icon:'fa-user-shield', desc:'观察聚合指标、处理自动告警、管理成员节点、调节全局训练参数。协调员只看脱敏后的事件摘要和综合评分。', href:'coordinator/event_center.html', cta:'进入协调员端', status:'2 个紧急事件待处理', features:[['事件中心','自动告警、广播通知、标记处理。','fa-bell'],['节点管理','机构在线状态、行为评分、Fisher 贡献。','fa-network-wired'],['全局训练控制','调节参与比例、异常阈值和对齐权重。','fa-sliders']] },
+  { title:'机构运营员端', badge:'机构侧控制中心', tone:'operator', icon:'fa-building-shield', desc:'负责本机构节点运行、本地训练参数、隐私预算、隔离与恢复节点。运营员无法查看其他机构的本地信息。', href:'operator/node_status.html', cta:'进入运营员端', status:'本地节点在线训练中', features:[['节点状态','本地检测率、隐私保护、Fisher 权重。','fa-server'],['本地训练','本地轮次、噪声强度、参与模式调整。','fa-microchip'],['数据保护状态','预算、加密、噪声注入可追踪。','fa-lock']] }
+];
+const capabilitySteps = [
+  { title:'数据不离开机构', desc:'原始样本、攻击详情和业务数据保留在本地环境。', icon:'fa-database' },
+  { title:'联合训练', desc:'机构上传脱敏原型和统计摘要，协调中心完成安全聚合。', icon:'fa-arrows-rotate' },
+  { title:'模型优化', desc:'使用 Fisher 权重、动态调度和隐私噪声稳定提升模型表现。', icon:'fa-chart-line' },
+  { title:'异常检测', desc:'通过马氏距离、行为评分和趋势监控识别异常节点。', icon:'fa-shield-virus' }
+];
+function renderMetrics(){
+  document.getElementById('homeMetrics').innerHTML = metrics.map(metric => `<article class="home-metric-card ${metric.tone}"><div class="home-metric-top"><span>${metric.label}</span><em class="trend-chip ${metric.tone === 'warning' ? 'warning' : metric.tone === 'success' ? 'up' : 'neutral'}">${metric.trend}</em></div><strong><span data-count="${metric.value}" data-decimals="${String(metric.value).includes('.') ? 1 : 0}" data-prefix="${metric.prefix || ''}" data-suffix="${metric.suffix || ''}">0</span></strong><p>${metric.note}</p><svg viewBox="0 0 140 42" preserveAspectRatio="none">${sparkPath(metric.spark)}</svg></article>`).join('');
+}
+function renderRoles(){
+  document.getElementById('roleEntries').innerHTML = roles.map(role => `<article class="home-role-card ${role.tone}"><div class="role-card-head"><span><i class="fas ${role.icon}"></i></span><div><em>${role.badge}</em><h3>${role.title}</h3></div></div><p>${role.desc}</p><div class="role-status"><i class="fas fa-circle"></i>${role.status}</div><div class="role-feature-grid">${role.features.map(item => `<div><i class="fas ${item[2]}"></i><strong>${item[0]}</strong><span>${item[1]}</span></div>`).join('')}</div><a class="btn btn-primary" href="${role.href}">${role.cta}</a></article>`).join('');
+}
+function renderCapabilities(){
+  document.getElementById('capabilities').innerHTML = capabilitySteps.map((step, index) => `<article class="capability-step"><span class="capability-index">0${index + 1}</span><div class="capability-icon"><i class="fas ${step.icon}"></i></div><strong>${step.title}</strong><p>${step.desc}</p></article>`).join('');
+}
+function sparkPath(values){
+  const max = Math.max(...values); const min = Math.min(...values); const points = values.map((value, index) => { const x = index * (140 / (values.length - 1)); const y = 36 - ((value - min) / Math.max(1, max - min)) * 28; return `${x},${y}`; }).join(' ');
+  return `<polyline points="${points}" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polygon points="0,42 ${points} 140,42" fill="currentColor" opacity="0.08"/>`;
+}
+function animateNumbers(){
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseFloat(el.dataset.count); const decimals = parseInt(el.dataset.decimals, 10); const prefix = el.dataset.prefix || ''; const suffix = el.dataset.suffix || ''; const start = performance.now();
+    function frame(now){ const progress = Math.min(1, (now - start) / 900); const eased = 1 - Math.pow(1 - progress, 3); el.textContent = prefix + (target * eased).toFixed(decimals) + suffix; if(progress < 1) requestAnimationFrame(frame); }
+    requestAnimationFrame(frame);
+  });
+}
+renderMetrics();
+renderRoles();
+renderCapabilities();
+animateNumbers();
+</script>
+</body>
+</html>

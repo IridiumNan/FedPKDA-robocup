@@ -1,111 +1,72 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>训练控制 · FedPKDA</title>
-<link rel="stylesheet" href="style.css" />
-<style>
-  .param-group { margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px solid #f3f4f6; }
-  .param-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .param-label { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-  .param-name { font-size: 0.86rem; font-weight: 500; }
-  .param-value { font-size: 0.86rem; font-weight: 600; color: var(--primary); }
-  .param-hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-</style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>训练控制 · 联盟协调员 · FedPKDA</title>
+<link rel="stylesheet" href="../style.css" />
 </head>
-<body class="layout">
+<body class="layout risk-dashboard fed-dashboard">
 <aside class="sidebar">
-  <div class="sidebar-logo"><i class="fas fa-shield-haltered"></i>Fed<span>PKDA</span></div>
+  <div class="sidebar-logo"><i class="fas fa-shield-halved"></i>Fed<span>PKDA</span></div>
   <nav class="sidebar-nav">
+    <a href="../index.html" class="nav-item"><i class="fas fa-house"></i>平台概览</a>
     <a href="event_center.html" class="nav-item"><i class="fas fa-bell"></i>事件中心<span class="nav-badge">4</span></a>
     <a href="node_management.html" class="nav-item"><i class="fas fa-building"></i>节点管理</a>
     <a href="training.html" class="nav-item active"><i class="fas fa-microchip"></i>训练控制</a>
     <a href="architecture.html" class="nav-item"><i class="fas fa-project-diagram"></i>系统架构</a>
+    <a href="../operator/node_status.html" class="nav-item"><i class="fas fa-right-left"></i>切换运营员端</a>
   </nav>
-  <div class="sidebar-footer"><span class="status-dot online"></span>联盟协调员</div>
+  <div class="sidebar-footer"><span class="status-dot online"></span>联盟协调员 · 全局参数</div>
 </aside>
-
 <main class="main">
   <div class="page-header">
-    <div>
-      <h1><i class="fas fa-microchip"></i>训练控制</h1>
-      <div class="sub">全局模型训练状态与参数配置 · 调整后下一轮生效</div>
-    </div>
-    <span class="badge badge-blue"><i class="fas fa-eye"></i>联盟协调员</span>
+    <div><h1><i class="fas fa-microchip"></i>训练控制</h1><div class="sub">统一趋势图、参数控制器和调整反馈 · 全局参数将在下一轮生效</div></div>
+    <span class="badge badge-blue"><i class="fas fa-eye"></i>协调员只能调全局参数</span>
   </div>
 
-  <div class="grid-3">
-    <div class="card stat-card accent-blue">
-      <div class="card-h"><i class="fas fa-layer-group"></i>训练轮次</div>
-      <div class="stat-number">38<span class="stat-unit"> / 40</span></div>
-      <div class="stat-label">每轮 4.2 min · 剩余 ~8 min</div>
-    </div>
-    <div class="card stat-card accent-success">
-      <div class="card-h"><i class="fas fa-bullseye"></i>全局检测率</div>
-      <div class="stat-number">45.1<span class="stat-unit">%</span></div>
-      <div class="stat-label trend-up"><i class="fas fa-arrow-up"></i> +1.2% vs 上轮</div>
-    </div>
-    <div class="card stat-card">
-      <div class="card-h"><i class="fas fa-chart-line"></i>动态调度阶段</div>
-      <div class="stat-number" style="font-size:1.3rem;">全局泛化</div>
-      <div class="meter" style="margin-top:10px;"><div class="meter-bar good" style="width:85%"></div></div>
-      <div class="stat-label">local_par=0.2 · global_par=0.8 · 后期</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><i class="fas fa-chart-line"></i>全局检测率趋势 · 历史 40 轮</div>
-    <div style="display:flex;align-items:flex-end;gap:2px;height:130px;padding:8px 0;">
-      <script>const D=[2.2,4.2,7.0,10.1,13.5,16.8,19.2,21.5,23.8,25.6,27.1,28.5,29.8,31.0,32.1,33.2,34.3,35.1,36.0,36.8,37.5,38.2,38.9,39.5,40.1,40.7,41.2,41.7,42.2,42.6,43.0,43.4,43.7,44.0,44.3,44.5,44.7,44.9,45.0,45.1];document.write(D.map((v,i)=>`<div title="轮次 ${i+1}: ${v}%" style="flex:1;height:${v*2.6}px;background:linear-gradient(0deg,#3b82f6,#93c5fd);border-radius:2px 2px 0 0;"></div>`).join(''))</script>
-    </div>
-    <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text-muted);margin-top:2px;"><span>1</span><span>10</span><span>20</span><span>30</span><span>40</span></div>
+  <div class="grid-4">
+    <div class="card stat-card accent-blue"><div class="card-h"><i class="fas fa-layer-group"></i>训练轮次</div><div class="stat-number">38<span class="stat-unit">/40</span></div><div class="stat-label">平均 4.2 min/轮 · 预计 8 min 结束</div></div>
+    <div class="card stat-card accent-success"><div class="card-h"><i class="fas fa-bullseye"></i>全局检测率</div><div class="stat-number">45.1<span class="stat-unit">%</span></div><div class="stat-label trend-up"><i class="fas fa-arrow-up"></i> +1.2pp vs 上轮</div></div>
+    <div class="card stat-card"><div class="card-h"><i class="fas fa-scale-balanced"></i>动态调度 α(t)</div><div class="stat-number stat-word">全局泛化</div><div class="meter"><div class="meter-bar good" style="width:85%"></div></div><div class="stat-label">local_par=0.2 · global_par=0.8</div></div>
+    <div class="card stat-card accent-success"><div class="card-h"><i class="fas fa-gauge-high"></i>训练效率</div><div class="stat-number">95<span class="stat-unit">%</span></div><div class="stat-label trend-up"><i class="fas fa-arrow-up"></i> 今日闭环稳定</div></div>
   </div>
 
   <div class="grid-2">
-    <div class="card">
-      <div class="card-h"><i class="fas fa-sliders-h"></i>全局训练参数</div>
+    <section class="card line-chart-card">
+      <div class="card-h card-h-split"><span><i class="fas fa-chart-line"></i>训练趋势</span><span class="badge badge-green">稳定提升</span></div>
+      <svg class="area-chart" viewBox="0 0 760 220" preserveAspectRatio="none" aria-label="全局检测率趋势图">
+        <defs><linearGradient id="coordArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#2563eb" stop-opacity="0.28"/><stop offset="100%" stop-color="#2563eb" stop-opacity="0.02"/></linearGradient></defs>
+        <path d="M0,206 L30,196 L60,184 L90,170 L120,154 L150,140 L180,130 L210,120 L240,112 L270,104 L300,98 L330,92 L360,86 L390,80 L420,76 L450,72 L480,68 L510,64 L540,60 L570,56 L600,52 L630,48 L660,44 L690,40 L720,36 L760,32 L760,220 L0,220 Z" fill="url(#coordArea)"/>
+        <path d="M0,206 L30,196 L60,184 L90,170 L120,154 L150,140 L180,130 L210,120 L240,112 L270,104 L300,98 L330,92 L360,86 L390,80 L420,76 L450,72 L480,68 L510,64 L540,60 L570,56 L600,52 L630,48 L660,44 L690,40 L720,36 L760,32" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <div class="chart-legend"><span><i class="legend-dot" style="background:#2563eb"></i>全局检测率</span><span><i class="legend-dot" style="background:#10b981"></i>目标线 42%</span><span>第 38 轮：45.1%</span></div>
+    </section>
 
-      <div class="param-group">
-        <div class="param-label"><span class="param-name">Global Alignment Weight</span><span class="param-value">0.50</span></div>
-        <input type="range" min="0" max="100" value="50" style="width:100%;" />
-        <div class="param-hint">全局对齐权重（global_par）。数值越高，模型越偏向全局泛化能力；越低则保留更多本地个性化特征。φ(t) 动态函数在早期自动偏向本地（0.2），后期自动偏向全局（0.8）。</div>
+    <section class="card">
+      <div class="card-h"><i class="fas fa-sliders-h"></i>全局参数控制</div>
+      <div class="control-stack">
+        <div class="control-item"><div class="control-head"><strong>Global Alignment Weight</strong><span class="control-value" id="globalValue">0.50</span></div><input id="globalRange" type="range" min="0" max="100" value="50" style="width:100%;" oninput="syncRange('global')" /><div class="control-feedback" id="globalFeedback">当前为平衡策略：兼顾联盟泛化与机构个性化。</div></div>
+        <div class="control-item"><div class="control-head"><strong>Participation Ratio</strong><span class="control-value" id="joinValue">0.20</span></div><input id="joinRange" type="range" min="5" max="100" value="20" style="width:100%;" oninput="syncRange('join')" /><div class="control-feedback" id="joinFeedback">每轮约 5/24 节点参与，通信成本较低。</div></div>
+        <div class="control-item"><div class="control-head"><strong>Anomaly Threshold</strong><span class="control-value" id="thresholdValue">3.0σ</span></div><input id="thresholdRange" type="range" min="15" max="50" value="30" style="width:100%;" oninput="syncRange('threshold')" /><div class="control-feedback" id="thresholdFeedback">当前阈值适中，误报与漏报风险平衡。</div></div>
       </div>
-
-      <div class="param-group">
-        <div class="param-label"><span class="param-name">Participation Ratio</span><span class="param-value">0.20</span></div>
-        <input type="range" min="5" max="100" value="20" style="width:100%;" />
-        <div class="param-hint">每轮参与全局聚合的节点比例（join_ratio）。当前值 0.20 表示每轮随机选取 20% 的节点（约 5/24）参与训练。提高可加速收敛但增加通信开销。</div>
-      </div>
-
-      <div class="param-group">
-        <div class="param-label"><span class="param-name">Anomaly Detection Threshold</span><span class="param-value">3.0 σ</span></div>
-        <input type="range" min="15" max="50" value="30" style="width:100%;" />
-        <div class="param-hint">马氏距离异常检测阈值。节点原型向量与全局质心的马氏距离超过此值时标记为可疑，并在全局聚合中自动降权。降低阈值会提高检测灵敏度但可能增加误报。</div>
-      </div>
-
-      <button class="btn btn-primary" onclick="T('全局参数已更新，下一轮生效')"><i class="fas fa-check"></i>确认并应用</button>
-    </div>
-
-    <div class="card">
-      <div class="card-h"><i class="fas fa-weight-hanging"></i>节点贡献度排行</div>
-      <div style="font-size:0.76rem;color:var(--text-muted);margin-bottom:12px;">Fisher 信息矩阵自动量化各节点的模型贡献。贡献度低的节点在全局聚合中自动获得低权重。</div>
-      <table class="table">
-        <tr><td><span class="status-dot online"></span>省农商行清算中心</td><td><strong>0.31</strong></td><td><div class="meter"><div class="meter-bar good" style="width:100%"></div></div></td></tr>
-        <tr><td><span class="status-dot online"></span>省会城市商业银行</td><td><strong>0.29</strong></td><td><div class="meter"><div class="meter-bar good" style="width:94%"></div></div></td></tr>
-        <tr><td><span class="status-dot online"></span>南部农信联合社</td><td><strong>0.27</strong></td><td><div class="meter"><div class="meter-bar good" style="width:87%"></div></div></td></tr>
-        <tr><td><span class="status-dot online"></span>省政务云安全中心</td><td><strong>0.25</strong></td><td><div class="meter"><div class="meter-bar good" style="width:81%"></div></div></td></tr>
-        <tr><td><span class="status-dot online"></span>东部农信联合社</td><td><strong>0.23</strong></td><td><div class="meter"><div class="meter-bar good" style="width:74%"></div></div></td></tr>
-        <tr><td><span class="status-dot online"></span>市政务数据管理中心</td><td><strong>0.21</strong></td><td><div class="meter"><div class="meter-bar good" style="width:68%"></div></div></td></tr>
-        <tr><td><span class="status-dot online"></span>省电力调度中心</td><td><strong>0.18</strong></td><td><div class="meter"><div class="meter-bar good" style="width:58%"></div></div></td></tr>
-        <tr><td><span class="status-dot online"></span>省通信网络管理中心</td><td><strong>0.15</strong></td><td><div class="meter"><div class="meter-bar good" style="width:48%"></div></div></td></tr>
-        <tr style="border-top:1px dashed var(--border-color);"><td colspan="3" style="font-size:0.7rem;color:var(--text-muted);text-align:center;">其余 14 个节点</td></tr>
-        <tr><td><span class="status-dot warning"></span>市商行数据中心</td><td><strong>0.03</strong></td><td><div class="meter"><div class="meter-bar warn" style="width:10%"></div></div></td></tr>
-        <tr><td><span class="status-dot offline"></span>区域能源网络中心</td><td><strong>0.00</strong></td><td><div class="meter" style="background:#fef2f2;"><div class="meter-bar bad" style="width:0%"></div></div></td></tr>
-      </table>
-    </div>
+      <div class="operation-bar" style="margin-top:16px;"><span class="small-meta">调整不会立即中断当前训练，将在下一轮生效。</span><button class="btn btn-primary" onclick="toast('全局参数已保存，将在下一轮训练生效')"><i class="fas fa-check"></i>应用到下一轮</button></div>
+    </section>
   </div>
+
+  <section class="card">
+    <div class="card-h"><i class="fas fa-weight-hanging"></i>Fisher 贡献度排行</div>
+    <table class="table"><tr><td><span class="status-dot online"></span>省农商行清算中心</td><td><strong>0.31</strong></td><td><div class="meter"><div class="meter-bar good" style="width:100%"></div></div></td></tr><tr><td><span class="status-dot online"></span>省会城市商业银行</td><td><strong>0.29</strong></td><td><div class="meter"><div class="meter-bar good" style="width:94%"></div></div></td></tr><tr><td><span class="status-dot warning"></span>商行数据中心</td><td><strong>0.03</strong></td><td><div class="meter"><div class="meter-bar warn" style="width:10%"></div></div></td></tr><tr><td><span class="status-dot offline"></span>区域能源网络中心</td><td><strong>0.00</strong></td><td><div class="meter"><div class="meter-bar bad" style="width:0%"></div></div></td></tr></table>
+  </section>
   <div id="toast" class="toast"></div>
 </main>
-<script>function T(m){const t=document.getElementById('toast');t.innerHTML='<i class="fas fa-check-circle"></i> '+m;t.className='toast show toast-success';setTimeout(()=>t.className='toast',2500)}</script>
+<script>
+function syncRange(type){
+  if(type==='global') { const v=document.getElementById('globalRange').value/100; document.getElementById('globalValue').textContent=v.toFixed(2); document.getElementById('globalFeedback').textContent=v>0.7?'偏向全局泛化，适合联盟整体检测率下滑时使用。':v<0.35?'偏向本地个性化，适合机构差异较大时使用。':'当前为平衡策略：兼顾联盟泛化与机构个性化。'; }
+  if(type==='join') { const v=document.getElementById('joinRange').value/100; document.getElementById('joinValue').textContent=v.toFixed(2); document.getElementById('joinFeedback').textContent='每轮约 '+Math.max(1,Math.round(v*24))+'/24 节点参与，通信成本随比例上升。'; }
+  if(type==='threshold') { const v=document.getElementById('thresholdRange').value/10; document.getElementById('thresholdValue').textContent=v.toFixed(1)+'σ'; document.getElementById('thresholdFeedback').textContent=v<2.5?'更敏感，适合快速发现异常但可能增加误报。':v>3.8?'更宽松，适合降低误报但可能延迟发现异常。':'当前阈值适中，误报与漏报风险平衡。'; }
+}
+function toast(msg){ const t=document.getElementById('toast'); t.innerHTML='<i class="fas fa-check-circle"></i> '+msg; t.className='toast show toast-success'; setTimeout(()=>t.className='toast',2400); }
+</script>
 </body>
 </html>
