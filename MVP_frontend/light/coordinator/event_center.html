@@ -1,110 +1,289 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>事件中心 · FedPKDA</title>
-<link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>事件中心 · 联盟协调员 · FedPKDA</title>
+<link rel="stylesheet" href="../style.css" />
 </head>
-<body class="layout">
+<body class="layout risk-dashboard fed-dashboard">
 <aside class="sidebar">
-  <div class="sidebar-logo"><i class="fas fa-shield-haltered"></i>Fed<span>PKDA</span></div>
+  <div class="sidebar-logo"><i class="fas fa-shield-halved"></i>Fed<span>PKDA</span></div>
   <nav class="sidebar-nav">
+    <a href="../index.html" class="nav-item"><i class="fas fa-house"></i>平台概览</a>
     <a href="event_center.html" class="nav-item active"><i class="fas fa-bell"></i>事件中心<span class="nav-badge">4</span></a>
-    <a href="node_management.html" class="nav-item"><i class="fas fa-building"></i>节点管理</a>
+    <a href="node_management.html" class="nav-item"><i class="fas fa-network-wired"></i>节点管理</a>
     <a href="training.html" class="nav-item"><i class="fas fa-microchip"></i>训练控制</a>
     <a href="architecture.html" class="nav-item"><i class="fas fa-project-diagram"></i>系统架构</a>
+    <a href="../operator/node_status.html" class="nav-item"><i class="fas fa-chart-line"></i>运营监控</a>
   </nav>
-  <div class="sidebar-footer"><span class="status-dot online"></span>联盟协调员</div>
+  <div class="sidebar-footer"><span class="status-dot online"></span><div><strong>联动协调员</strong><small>只聚合信息</small></div></div>
 </aside>
-
-<main class="main">
-  <div class="page-header">
+<main class="main event-center-main ai-risk-main">
+  <header class="risk-dashboard-header">
     <div>
-      <h1><i class="fas fa-bell"></i>事件中心</h1>
-      <div class="sub">系统自动检测需要关注的事件 · 实时更新</div>
+      <span class="dashboard-eyebrow"><i class="fas fa-satellite-dish"></i>AI Risk Operations</span>
+      <h1>事件中心</h1>
+      <p>实时监控模型运行状态、风险事件和异常行为</p>
     </div>
-    <span class="badge badge-blue"><i class="fas fa-eye"></i>联盟协调员</span>
-  </div>
+    <div class="dashboard-header-actions">
+      <div class="dashboard-time"><span>当前时间</span><strong id="currentTime">--:--:--</strong></div>
+      <span class="system-online"><i></i>System Online</span>
+      <button class="icon-action" type="button" onclick="toast('通知中心暂无新消息')" aria-label="通知入口"><i class="fas fa-bell"></i></button>
+      <button class="btn btn-sm btn-primary" type="button" onclick="refreshDashboard()"><i class="fas fa-rotate"></i>刷新</button>
+    </div>
+  </header>
 
-  <div class="grid-3">
-    <div class="card stat-card accent-blue">
-      <div class="card-h"><i class="fas fa-bullseye"></i>全局检测率</div>
-      <div class="stat-number">45.1<span class="stat-unit">%</span></div>
-      <div class="stat-label trend-up"><i class="fas fa-arrow-up"></i> +1.2% vs 上轮</div>
-    </div>
-    <div class="card stat-card">
-      <div class="card-h"><i class="fas fa-layer-group"></i>训练轮次</div>
-      <div class="stat-number">38<span class="stat-unit"> / 40</span></div>
-      <div class="stat-label">剩余约 8 分钟 · 每轮 4.2 min</div>
-    </div>
-    <div class="card stat-card accent-warning">
-      <div class="card-h"><i class="fas fa-users"></i>活跃节点</div>
-      <div class="stat-number">22<span class="stat-unit">/24</span></div>
-      <div class="stat-label" style="color:var(--warning)"><span class="status-dot offline"></span>2 个节点异常</div>
-    </div>
-  </div>
+  <section class="risk-kpi-grid" aria-label="事件中心关键指标">
+    <article class="risk-kpi-card primary"><div class="risk-kpi-top"><span><i class="fas fa-inbox"></i>待处理事件</span><em>↑12% compared yesterday</em></div><div class="risk-kpi-value"><strong id="statPending">4</strong><small>Pending</small></div><svg viewBox="0 0 140 42" aria-hidden="true"><polyline points="0,31 18,27 36,29 54,19 72,22 90,13 108,18 126,8 140,11"></polyline></svg><span class="risk-kpi-chip warning">需要响应</span></article>
+    <article class="risk-kpi-card danger"><div class="risk-kpi-top"><span><i class="fas fa-triangle-exclamation"></i>高风险事件</span><em>2 active alerts</em></div><div class="risk-kpi-value"><strong id="statHighRisk">2</strong><small>High Risk</small></div><svg viewBox="0 0 140 42" aria-hidden="true"><polyline points="0,35 18,34 36,28 54,30 72,20 90,24 108,12 126,15 140,7"></polyline></svg><span class="risk-kpi-chip danger">Elevated</span></article>
+    <article class="risk-kpi-card success"><div class="risk-kpi-top"><span><i class="fas fa-heart-pulse"></i>模型健康度</span><em>+1.4% stable</em></div><div class="risk-kpi-value"><strong>98.6%</strong><small>Health</small></div><svg viewBox="0 0 140 42" aria-hidden="true"><polyline points="0,24 18,22 36,20 54,18 72,21 90,16 108,14 126,13 140,10"></polyline></svg><span class="risk-kpi-chip success">Running</span></article>
+    <article class="risk-kpi-card info"><div class="risk-kpi-top"><span><i class="fas fa-gauge-high"></i>今日处理效率</span><em>95% closed loop</em></div><div class="risk-kpi-value"><strong>95%</strong><small>Efficiency</small></div><svg viewBox="0 0 140 42" aria-hidden="true"><polyline points="0,30 18,25 36,26 54,20 72,17 90,18 108,12 126,10 140,9"></polyline></svg><span class="risk-kpi-chip info">Healthy</span></article>
+  </section>
 
-  <div class="card">
-    <div class="card-h" style="display:flex;justify-content:space-between;">
-      <span><i class="fas fa-clock"></i>事件时间线</span>
-      <span class="badge badge-red">4 条待处理</span>
-    </div>
-    <div id="timeline"></div>
-  </div>
+  <section class="risk-command-grid">
+    <aside class="dashboard-panel risk-analysis-panel" aria-labelledby="typeTitle">
+      <div class="dashboard-panel-head">
+        <div><span>Event Analytics</span><h2 id="typeTitle">事件态势分析</h2></div>
+        <button class="panel-tool" type="button" onclick="toast('已同步事件类型分布')" aria-label="同步事件态势"><i class="fas fa-arrows-rotate"></i></button>
+      </div>
+      <div class="risk-donut-row">
+        <div class="risk-donut-shell">
+          <svg id="eventDonut" class="event-donut risk-donut" viewBox="0 0 200 200" role="img" aria-label="事件类型占比环形图"></svg>
+          <div class="event-donut-center risk-donut-center"><strong id="donutTotal">5</strong><span>total events</span></div>
+        </div>
+        <div id="eventLegend" class="event-legend risk-legend" aria-label="事件类型图例"></div>
+      </div>
+      <div class="type-rank-section">
+        <div class="type-rank-title"><span>事件类型排行</span><em id="rankFilterLabel">当前：风险告警</em></div>
+        <div id="typeRankList" class="type-rank-list"></div>
+      </div>
+      <div id="eventAnalysisTooltip" class="risk-tooltip" hidden></div>
+    </aside>
+
+    <section class="dashboard-panel live-risk-panel" aria-labelledby="selectedTypeTitle">
+      <div class="dashboard-panel-head">
+        <div><span>Realtime Alerts</span><h2>实时风险事件</h2></div>
+        <div class="risk-panel-meta"><strong id="selectedTypeTitle">风险告警</strong><em id="selectedTypeCount">2 个事件</em></div>
+      </div>
+      <div id="eventList" class="risk-timeline-list"></div>
+    </section>
+  </section>
+
+  <section class="risk-ops-grid">
+    <section class="dashboard-panel risk-trend-panel">
+      <div class="dashboard-panel-head"><div><span>Risk Trend</span><h2>近24小时风险变化</h2></div><span class="mini-status">事件数量变化</span></div>
+      <svg id="riskTrendChart" class="risk-trend-chart" viewBox="0 0 640 220" role="img" aria-label="近24小时风险变化折线图"></svg>
+    </section>
+
+    <section class="dashboard-panel model-monitor-panel">
+      <div class="dashboard-panel-head"><div><span>Model Runtime</span><h2>模型状态监控</h2></div><span class="running-pill"><i></i>Running</span></div>
+      <div class="model-runtime-card"><div><span>模型</span><strong>异常检测模型</strong></div><div><span>准确率</span><strong>96.8%</strong></div><div><span>推理延迟</span><strong>32ms</strong></div><div><span>同步轮次</span><strong>38 / 40</strong></div></div>
+      <div class="model-meter"><span>runtime stability</span><i><b style="width:96%"></b></i></div>
+    </section>
+
+    <section class="dashboard-panel node-health-panel">
+      <div class="dashboard-panel-head"><div><span>Node Health</span><h2>节点健康状态</h2></div><span class="mini-status">3 watched</span></div>
+      <div class="node-health-list"><span><i class="ok"></i>BANK-COM-01<em>正常</em></span><span><i class="ok"></i>BANK-COM-02<em>正常</em></span><span><i class="risk pulse-dot"></i>BANK-COM-03<em>异常</em></span><span><i class="warn"></i>ENG-PWR-03<em>关注</em></span></div>
+    </section>
+  </section>
   <div id="toast" class="toast"></div>
 </main>
-
 <script>
-const events=[
-  {id:0,time:'14:32',level:'urgent',head:'市商行数据中心行为偏离 4.2σ',detail:'该节点本轮上传的原型向量在 K-Means 聚类后马氏距离为 4.2σ，超过异常检测阈值 3.0σ。全局聚合中已自动降低该节点权重至 0.03。近 3 轮权重趋势：0.31→0.14→0.03。建议通知该机构安全负责人排查本地训练数据是否存在投毒或系统性偏差。',actions:[{label:'广播通知各机构',type:'primary'},{label:'标记已处理',type:'ghost'}],done:false},
-  {id:1,time:'14:15',level:'warning',head:'区域供电公司B 行为评分跌破预警线',detail:'该节点行为评分从上周的 78 持续下滑至 63，已跌破系统预设的 65 分预警线。近 5 轮趋势：78→73→70→67→63。评分基于马氏距离映射，下滑通常表明本地数据分布与联盟整体出现分歧。当前 Fisher 权重为 0.06，若下轮继续下降将被自动隔离。',actions:[{label:'广播通知各机构',type:'primary'},{label:'标记已处理',type:'ghost'}],done:false},
-  {id:2,time:'13:15',level:'urgent',head:'全局检测率连续 5 轮下降至 44.1%',detail:'检测率已连续 5 轮下滑，累计降幅 2.2pp（46.3%→44.1%）。可能原因：(1) global_par=0.8 过大导致个性化退化；(2) 市商行节点污染效应未清除；(3) 部分节点数据出现概念漂移。当前 φ(t)=0.8，建议暂时将 global_par 降至 0.5，各节点本地训练轮次增至 8。',actions:[{label:'广播通知各机构',type:'primary'},{label:'调整全局参数',type:'ghost'}],done:false},
-  {id:3,time:'11:08',level:'warning',head:'区域能源网络中心连续 3 轮贡献度为零',detail:'该节点 Fisher 权重已降至 0.00，连续 3 轮无有效贡献。节点在线但训练输出被服务端判定为无效——所有上传的原型向量与全局质心距离异常，K-Means 分配失败。可能原因：本地特征提取器过拟合或数据格式与联盟标准不一致。建议协调员联系该机构确认。',actions:[{label:'广播通知各机构',type:'primary'},{label:'标记已处理',type:'ghost'}],done:false},
-  {id:4,time:'09:47',level:'info',head:'系统检测到新型攻击模式',detail:'全局模型在某成员机构本地推理时检出未知攻击类型，置信度 87%。该攻击模式已通过原型机制自动纳入本轮全局模型——K-Means 聚类为其新增一个全局原型向量。所有成员机构下一轮同步后自动获得防御能力。该事件完全匿名：协调员无法获知来源机构、攻击类型及检出时间。',actions:[{label:'广播通知各机构',type:'primary'},{label:'标记已处理',type:'ghost'}],done:false},
-  {id:5,time:'09:02',level:'warning',head:'东部农信联合社本地检测率高于联盟均值 29pp',detail:'该节点本地检测率 74.1%，联盟全局均值 45.1%，差异 29pp 超过允许偏差 20pp。表明该机构本地数据分布与联盟存在显著差异。φ(t) 动态调度已自动增强该节点的本地个性化权重，防止全局对齐破坏其已有检测能力。此为正常保护机制，无需干预。',actions:[{label:'标记已处理',type:'ghost'}],done:false},
-  {id:6,time:'08:02',level:'warning',head:'区域能源网络中心离线超过 3 轮',detail:'最近一次心跳响应 07:45，已失联超过 6 小时。该节点部署于能源 SCADA 网络边界，离线后联盟缺少该机构的工控网络流量特征。建议协调员联系负责人（陈工 135-xxxx-7890）确认服务器状态。若 24h 内未恢复，建议从本轮训练中移除。',actions:[{label:'广播通知各机构',type:'primary'},{label:'标记已处理',type:'ghost'}],done:false},
-  {id:7,time:'06:22',level:'info',head:'省会城市商业银行完成定期本地模型校验',detail:'该校验每 10 轮触发一次。结果：(1) 数据分布 KL 散度 vs 上一周期 = 0.03（正常）；(2) 特征提取器输出维度 = 512（正常）；(3) 本地原型 vs 全局原型余弦相似度 = 0.87（正常）。行为评分 88，Fisher 权重 0.29，节点运行健康。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
-  {id:8,time:'02:30',level:'info',head:'第 38 轮联邦训练完成',detail:'全局检测率 45.1%（+1.2pp），耗时 4.2 min，参与节点 22/24。聚合权重前 5：省农商行 0.31 / 省会商行 0.29 / 南部农信 0.27 / 省政务云 0.25 / 东部农信 0.23。检测率回升表明上一轮降低 global_par 至 0.5 的调整已生效。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
-  {id:9,time:'昨天 22:15',level:'info',head:'第 37 轮联邦训练完成',detail:'全局检测率 43.9%（+0.8pp），耗时 4.1 min，参与节点 22/24。重点关注：市商行数据中心 Fisher 权重本轮异常下降（0.31→0.14→0.03），三连降趋势符合异常标记条件，建议持续监控。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
-  {id:10,time:'昨天 18:30',level:'warning',head:'省电力调度中心行为偏离 2.8σ',detail:'偏离度接近 3.0σ 警戒线。近 3 轮趋势：2.1σ→2.5σ→2.8σ（持续上升）。系统已自动纳入监控列表，若突破阈值将自动告警。暂无需手动干预，保持关注即可。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
-  {id:11,time:'昨天 14:30',level:'info',head:'省政务云安全中心完成季度数据质量审计',detail:'审计结果：训练数据覆盖 9 类攻击模式中的 8 类，缺少 Botnet 类样本。Botnet 缺失意味着对该类攻击的检测依赖全局知识迁移。建议在后续数据采集中补充 Botnet 流量。审计不影响当前训练。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
-  {id:12,time:'昨天 10:05',level:'info',head:'城市轨道交通控制中心完成首轮训练',detail:'该节点为联盟交通行业首个成员。首轮指标：行为评分 63（样本不足，可信度低），Fisher 权重 0.08。新节点初始权重通常较低，预计 5-8 轮训练后收敛至正常区间（预计 Fisher ~0.12-0.18）。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
-  {id:13,time:'前天 20:00',level:'info',head:'每周自动评估：平均检测率 44.2%',detail:'过去 7 天联盟整体运行评估。关键指标：(1) 平均检测率 44.2%，超过目标 42%；(2) 节点平均在线率 91.7%（24 节点中平均在线 22 个）；(3) 累计检出 23 类攻击变种，含 2 类新型；(4) Fisher 贡献度前 3：省农商行、省会商行、南部农信；(5) 无安全事件漏报。联盟整体健康。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
+const categories = [
+  { id:'risk', name:'风险告警', color:'#dc2626', soft:'#fee2e2', hint:'优先处理高风险事件', icon:'fa-triangle-exclamation' },
+  { id:'watch', name:'关注事件', color:'#d97706', soft:'#fef3c7', hint:'持续观察并等待下一轮确认', icon:'fa-eye' },
+  { id:'normal', name:'普通记录', color:'#2563eb', soft:'#eff6ff', hint:'训练日志与复盘材料', icon:'fa-clipboard-check' },
+  { id:'other', name:'其他事件', color:'#9ca3af', soft:'#f3f4f6', hint:'暂无其他事件', icon:'fa-ellipsis' }
 ];
+const events = [
+  { id:0, type:'risk', time:'14:32', duration:'持续 18m', title:'商行数据中心行为偏离 4.2σ', source:'BANK-COM-03 · 金融节点', status:'紧急', statusClass:'danger', metrics:[['聚合权重','0.14 → 0.03'],['风险','High']], detail:'本轮上传的带噪原型与全局质心距离显著异常，系统已将该节点聚合权重从 0.14 降至 0.03。建议通知机构安全负责人排查本地数据质量或投毒风险。', primary:'广播通知' },
+  { id:2, type:'risk', time:'13:15', duration:'持续 5 轮', title:'全局检测率连续 5 轮下滑', source:'全局模型 · 训练趋势', status:'紧急', statusClass:'danger', metrics:[['检测率','44.1%'],['趋势','Down']], detail:'检测率从 46.3% 下滑至 44.1%，可能与 global_par 过高或异常节点干扰有关。建议临时降低全局对齐权重，并提高本地训练轮次。', primary:'广播通知' },
+  { id:1, type:'watch', time:'14:15', duration:'连续 2 轮', title:'区域供电公司 B 行为评分跌破预警线', source:'ENG-PWR-03 · 能源节点', status:'关注', statusClass:'warning', metrics:[['行为评分','63/100'],['状态','Watch']], detail:'行为评分由 78 连续下滑至 63，已接近隔离策略触发条件。若下轮仍低于阈值，系统会自动归零其 Fisher 权重。', primary:'标记关注' },
+  { id:3, type:'watch', time:'11:08', duration:'连续 3 轮', title:'能源网络中心连续 3 轮贡献度为零', source:'ENG-NET-02 · 能源节点', status:'关注', statusClass:'warning', metrics:[['Fisher','0.00'],['活跃率','91.7%']], detail:'该节点在线但训练输出长期无有效贡献，系统已标记为观察对象。协调员只能发出建议，隔离或恢复操作由机构运营员执行。', primary:'标记关注' },
+  { id:4, type:'normal', time:'09:40', duration:'已完成', title:'第 38 轮联邦训练完成', source:'训练系统 · 第 38 轮', status:'已记录', statusClass:'info', metrics:[['检测率','45.1%'],['轮次','38/40']], detail:'全局检测率 45.1%，较上一轮提升 1.2pp。Fisher 权重前 3 节点来自金融、政务与能源行业。', primary:'查看摘要', done:true }
+];
+categories.forEach(cat => { cat.count = events.filter(ev => ev.type === cat.id).length; });
+const priorityOrder = { risk:0, watch:1, normal:2, other:3 };
+let selectedType = categories.filter(cat => cat.count > 0).sort((a, b) => b.count - a.count || priorityOrder[a.id] - priorityOrder[b.id])[0].id;
 
-function render(){
-  document.getElementById('timeline').innerHTML=events.map(e=>{
-    const cls='event-card event-'+e.level+(e.done?' event-done':'');
-    return `<div class="${cls}">
-      <div class="event-time">${e.time}</div>
-      <div class="event-body">
-        <div class="event-head">${e.head}</div>
-        <div class="event-detail" id="d-${e.id}">${e.detail}</div>
-        <div class="event-actions">
-          <button class="toggle-link" onclick="toggle(${e.id})" id="btn-${e.id}">查看详情</button>
-          ${e.actions.map(a=>`<button class="btn btn-sm btn-${a.type}" onclick="act(${e.id},'${a.label.includes('广播')?'b':a.label.includes('标记')?'d':'t'}')">${a.label}</button>`).join('')}
-        </div>
-      </div>
-    </div>`;
+function pointOnCircle(cx, cy, r, angle) {
+  const rad = (angle - 90) * Math.PI / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+function donutPath(startAngle, endAngle) {
+  const cx = 100;
+  const cy = 100;
+  const outerR = 88;
+  const innerR = 52;
+  const largeArc = endAngle - startAngle > 180 ? 1 : 0;
+  const outerStart = pointOnCircle(cx, cy, outerR, startAngle);
+  const outerEnd = pointOnCircle(cx, cy, outerR, endAngle);
+  const innerStart = pointOnCircle(cx, cy, innerR, startAngle);
+  const innerEnd = pointOnCircle(cx, cy, innerR, endAngle);
+  return `M ${outerStart.x.toFixed(3)} ${outerStart.y.toFixed(3)} A ${outerR} ${outerR} 0 ${largeArc} 1 ${outerEnd.x.toFixed(3)} ${outerEnd.y.toFixed(3)} L ${innerEnd.x.toFixed(3)} ${innerEnd.y.toFixed(3)} A ${innerR} ${innerR} 0 ${largeArc} 0 ${innerStart.x.toFixed(3)} ${innerStart.y.toFixed(3)} Z`;
+}
+function renderDonut() {
+  const donut = document.getElementById('eventDonut');
+  const total = categories.reduce((sum, cat) => sum + cat.count, 0);
+  document.getElementById('donutTotal').textContent = total;
+  if (!total) { donut.innerHTML = ''; return; }
+  let cumulative = 0;
+  donut.innerHTML = categories.map(cat => {
+    if (!cat.count) return '';
+    const start = cumulative / total * 360;
+    const end = (cumulative + cat.count) / total * 360;
+    const percent = Math.round(cat.count / total * 100);
+    cumulative += cat.count;
+    return `<path class="event-donut-segment${selectedType === cat.id ? ' active' : ''}" data-type="${cat.id}" d="${donutPath(start, end)}" fill="${cat.color}" tabindex="0" role="button" aria-label="${cat.name} ${cat.count} 个事件，${percent}%"></path>`;
   }).join('');
 }
-
-function toggle(id){
-  const d=document.getElementById('d-'+id);
-  const b=document.getElementById('btn-'+id);
-  if(d.classList.contains('show')){d.classList.remove('show');b.textContent='查看详情';}
-  else{d.classList.add('show');b.textContent='收起';}
+function renderLegend() {
+  const total = categories.reduce((sum, cat) => sum + cat.count, 0);
+  document.getElementById('eventLegend').innerHTML = categories.map(cat => {
+    const percent = total ? Math.round(cat.count / total * 100) : 0;
+    return `<button class="event-legend-item${selectedType === cat.id ? ' active' : ''}" data-type="${cat.id}" type="button" style="--legend-color:${cat.color}" aria-pressed="${selectedType === cat.id}"><span class="legend-dot"></span><span class="legend-name">${cat.name}</span><span class="legend-count">${cat.count}</span><span class="legend-percent">${percent}%</span></button>`;
+  }).join('');
 }
-
-function act(id,type){
-  const e=events.find(x=>x.id===id);if(!e||e.done)return;
-  const t=document.getElementById('toast');
-  if(type==='b'){t.innerHTML='<i class="fas fa-check-circle"></i> 已广播通知所有成员机构';t.className='toast show toast-success'}
-  else if(type==='d'){e.done=true;render();t.innerHTML='<i class="fas fa-check"></i> 已标记为已处理';t.className='toast show toast-success'}
-  else{t.innerHTML='<i class="fas fa-cog"></i> 已跳转到训练控制页面';t.className='toast show'}
-  setTimeout(()=>t.className='toast',2500);
+function renderRankList() {
+  const total = categories.reduce((sum, cat) => sum + cat.count, 0);
+  document.getElementById('rankFilterLabel').textContent = '当前：' + categories.find(cat => cat.id === selectedType).name;
+  document.getElementById('typeRankList').innerHTML = categories.map(cat => {
+    const percent = total ? Math.round(cat.count / total * 100) : 0;
+    return `<button type="button" class="type-rank-item${selectedType === cat.id ? ' active' : ''}" data-type="${cat.id}" style="--rank-color:${cat.color};--rank-width:${percent}%"><span>${cat.name}</span><i><b></b></i><em>${percent}%</em></button>`;
+  }).join('');
 }
+function renderList() {
+  const cat = categories.find(item => item.id === selectedType);
+  const list = document.getElementById('eventList');
+  document.getElementById('selectedTypeTitle').textContent = cat.name;
+  document.getElementById('selectedTypeCount').textContent = cat.count + ' 个事件';
+  if (!cat.count) {
+    list.innerHTML = `<div class="event-empty risk-empty"><i class="fas fa-${cat.icon}"></i><strong>暂无${cat.name}</strong><span>当前没有需要展示的事件。</span></div>`;
+    return;
+  }
+  list.innerHTML = events.filter(ev => ev.type === selectedType).map(eventCard).join('');
+}
+function eventCard(ev) {
+  const level = ev.type === 'risk' ? 'HIGH' : ev.type === 'watch' ? 'WATCH' : 'INFO';
+  const levelClass = ev.type === 'risk' ? 'danger' : ev.type === 'watch' ? 'warning' : 'info';
+  return `<article class="risk-timeline-card severity-${levelClass}${ev.done ? ' is-done' : ''}">
+    <div class="risk-level-dot ${levelClass}"><i></i><span>${level}</span></div>
+    <div class="risk-timeline-content">
+      <header><h3>${ev.title}</h3><span>${ev.status}</span></header>
+      <div class="risk-event-meta"><span><i class="fas fa-clock"></i>${ev.time}</span><span><i class="fas fa-server"></i>${ev.source}</span></div>
+      <div class="risk-event-metrics">${ev.metrics.map(metric => `<div><em>${metric[0]}</em><strong>${metric[1]}</strong></div>`).join('')}</div>
+      <div class="risk-event-detail" id="event-detail-${ev.id}" hidden>${ev.detail}</div>
+    </div>
+    <div class="risk-timeline-actions"><button class="btn btn-sm btn-ghost" onclick="toggleDetail(${ev.id})" id="event-toggle-${ev.id}" aria-expanded="false">查看详情</button><button class="btn btn-sm btn-primary" onclick="markDone(${ev.id})" ${ev.done ? 'disabled' : ''}>处理</button><button class="btn btn-sm ${ev.type === 'risk' ? 'btn-danger' : 'btn-ghost'}" onclick="handleEvent(${ev.id})">通知</button></div>
+  </article>`;
+}
+function renderRiskTrend() {
+  const values = [2, 3, 2, 5, 4, 6, 4, 7, 5, 8, 6, 9];
+  const width = 640;
+  const height = 220;
+  const pad = 28;
+  const max = Math.max(...values);
+  const step = (width - pad * 2) / (values.length - 1);
+  const points = values.map((value, index) => {
+    const x = pad + index * step;
+    const y = height - pad - (value / max) * (height - pad * 2);
+    return [x, y];
+  });
+  const line = points.map(point => point.join(',')).join(' ');
+  const area = `${pad},${height - pad} ${line} ${width - pad},${height - pad}`;
+  document.getElementById('riskTrendChart').innerHTML = `<defs><linearGradient id="riskTrendFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2563EB" stop-opacity="0.22"></stop><stop offset="100%" stop-color="#2563EB" stop-opacity="0"></stop></linearGradient></defs><g class="trend-grid"><line x1="28" y1="52" x2="612" y2="52"></line><line x1="28" y1="110" x2="612" y2="110"></line><line x1="28" y1="168" x2="612" y2="168"></line></g><polygon class="trend-area" points="${area}"></polygon><polyline class="trend-line" points="${line}"></polyline>${points.map((point, index) => `<circle class="trend-point" cx="${point[0]}" cy="${point[1]}" r="4"><title>${index * 2}:00 风险事件 ${values[index]}</title></circle>`).join('')}<g class="trend-axis"><text x="28" y="206">00:00</text><text x="292" y="206">12:00</text><text x="574" y="206">24:00</text></g>`;
+}
+function render() {
+  renderDonut();
+  renderLegend();
+  renderRankList();
+  renderList();
+  renderRiskTrend();
+  refreshStats();
+}
+function refreshStats() {
+  const pending = events.filter(ev => !ev.done).length;
+  const highRisk = events.filter(ev => ev.type === 'risk' && !ev.done).length;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statHighRisk').textContent = highRisk;
+}
+function selectType(type) {
+  if (type === selectedType) return;
+  selectedType = type;
+  render();
+}
+function toggleDetail(id) {
+  const el = document.getElementById('event-detail-' + id);
+  const btn = document.getElementById('event-toggle-' + id);
+  el.hidden = !el.hidden;
+  btn.textContent = el.hidden ? '查看详情' : '收起详情';
+  btn.setAttribute('aria-expanded', String(!el.hidden));
+}
+function handleEvent(id) {
+  const ev = events.find(item => item.id === id);
+  if (!ev) return;
+  toast((ev.primary === '查看摘要' ? '事件摘要已打开' : '通知已推送，等待节点确认'));
+}
+function markDone(id) {
+  const ev = events.find(item => item.id === id);
+  if (!ev || ev.done) return;
+  ev.done = true;
+  render();
+  toast('事件已进入处理闭环');
+}
+function refreshDashboard() {
+  updateTime();
+  renderRiskTrend();
+  toast('事件流与模型状态已刷新');
+}
+function updateTime() {
+  const now = new Date();
+  document.getElementById('currentTime').textContent = now.toLocaleTimeString('zh-CN', { hour12:false });
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = '<i class="fas fa-check-circle"></i> ' + msg;
+  t.className = 'toast show toast-success';
+  setTimeout(() => { t.className = 'toast'; }, 2400);
+}
+function showTooltip(cat, event) {
+  const tooltip = document.getElementById('eventAnalysisTooltip');
+  const total = categories.reduce((sum, item) => sum + item.count, 0);
+  const percent = total ? Math.round(cat.count / total * 100) : 0;
+  tooltip.innerHTML = `<strong>${cat.name}</strong><span>${cat.count} 个事件 · ${percent}%</span>`;
+  tooltip.hidden = false;
+  tooltip.style.left = event.clientX + 12 + 'px';
+  tooltip.style.top = event.clientY + 12 + 'px';
+}
+function hideTooltip() { document.getElementById('eventAnalysisTooltip').hidden = true; }
+document.getElementById('eventDonut').addEventListener('click', event => {
+  const segment = event.target.closest('path[data-type]');
+  if (segment) selectType(segment.dataset.type);
+});
+document.getElementById('eventDonut').addEventListener('mousemove', event => {
+  const segment = event.target.closest('path[data-type]');
+  if (!segment) return hideTooltip();
+  showTooltip(categories.find(cat => cat.id === segment.dataset.type), event);
+});
+document.getElementById('eventDonut').addEventListener('mouseleave', hideTooltip);
+document.getElementById('eventDonut').addEventListener('keydown', event => {
+  if ((event.key === 'Enter' || event.key === ' ') && event.target.dataset.type) {
+    event.preventDefault();
+    selectType(event.target.dataset.type);
+  }
+});
+document.getElementById('eventLegend').addEventListener('click', event => {
+  const item = event.target.closest('button[data-type]');
+  if (item) selectType(item.dataset.type);
+});
+document.getElementById('typeRankList').addEventListener('click', event => {
+  const item = event.target.closest('button[data-type]');
+  if (item) selectType(item.dataset.type);
+});
+updateTime();
+setInterval(updateTime, 1000);
 render();
-</script>
-</body>
+</script></body>
 </html>
+

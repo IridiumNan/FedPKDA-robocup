@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>事件中心 · FedPKDA</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo"><i class="fas fa-shield-haltered"></i>Fed<span>PKDA</span></div>
+  <nav class="sidebar-nav">
+    <a href="event_center.html" class="nav-item active"><i class="fas fa-bell"></i>事件中心<span class="nav-badge">4</span></a>
+    <a href="node_management.html" class="nav-item"><i class="fas fa-building"></i>节点管理</a>
+    <a href="training.html" class="nav-item"><i class="fas fa-microchip"></i>训练控制</a>
+    <a href="architecture.html" class="nav-item"><i class="fas fa-project-diagram"></i>系统架构</a>
+  </nav>
+  <div class="sidebar-footer"><span class="status-dot online"></span>联盟协调员</div>
+</aside>
+
+<main class="main">
+  <div class="page-header">
+    <div>
+      <h1><i class="fas fa-bell"></i>事件中心</h1>
+      <div class="sub">系统自动检测需要关注的事件 · 实时更新</div>
+    </div>
+    <span class="badge badge-blue"><i class="fas fa-eye"></i>联盟协调员</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="card stat-card accent-blue">
+      <div class="card-h"><i class="fas fa-bullseye"></i>全局检测率</div>
+      <div class="stat-number">45.1<span class="stat-unit">%</span></div>
+      <div class="stat-label trend-up"><i class="fas fa-arrow-up"></i> +1.2% vs 上轮</div>
+    </div>
+    <div class="card stat-card">
+      <div class="card-h"><i class="fas fa-layer-group"></i>训练轮次</div>
+      <div class="stat-number">38<span class="stat-unit"> / 40</span></div>
+      <div class="stat-label">剩余约 8 分钟 · 每轮 4.2 min</div>
+    </div>
+    <div class="card stat-card accent-warning">
+      <div class="card-h"><i class="fas fa-users"></i>活跃节点</div>
+      <div class="stat-number">22<span class="stat-unit">/24</span></div>
+      <div class="stat-label" style="color:var(--warning)"><span class="status-dot offline"></span>2 个节点异常</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h" style="display:flex;justify-content:space-between;">
+      <span><i class="fas fa-clock"></i>事件时间线</span>
+      <span class="badge badge-red">4 条待处理</span>
+    </div>
+    <div id="timeline"></div>
+  </div>
+  <div id="toast" class="toast"></div>
+</main>
+
+<script>
+const events=[
+  {id:0,time:'14:32',level:'urgent',head:'市商行数据中心行为偏离 4.2σ',detail:'该节点本轮上传的原型向量在 K-Means 聚类后马氏距离为 4.2σ，超过异常检测阈值 3.0σ。全局聚合中已自动降低该节点权重至 0.03。近 3 轮权重趋势：0.31→0.14→0.03。建议通知该机构安全负责人排查本地训练数据是否存在投毒或系统性偏差。',actions:[{label:'广播通知各机构',type:'primary'},{label:'标记已处理',type:'ghost'}],done:false},
+  {id:1,time:'14:15',level:'warning',head:'区域供电公司B 行为评分跌破预警线',detail:'该节点行为评分从上周的 78 持续下滑至 63，已跌破系统预设的 65 分预警线。近 5 轮趋势：78→73→70→67→63。评分基于马氏距离映射，下滑通常表明本地数据分布与联盟整体出现分歧。当前 Fisher 权重为 0.06，若下轮继续下降将被自动隔离。',actions:[{label:'广播通知各机构',type:'primary'},{label:'标记已处理',type:'ghost'}],done:false},
+  {id:2,time:'13:15',level:'urgent',head:'全局检测率连续 5 轮下降至 44.1%',detail:'检测率已连续 5 轮下滑，累计降幅 2.2pp（46.3%→44.1%）。可能原因：(1) global_par=0.8 过大导致个性化退化；(2) 市商行节点污染效应未清除；(3) 部分节点数据出现概念漂移。当前 φ(t)=0.8，建议暂时将 global_par 降至 0.5，各节点本地训练轮次增至 8。',actions:[{label:'广播通知各机构',type:'primary'},{label:'调整全局参数',type:'ghost'}],done:false},
+  {id:3,time:'11:08',level:'warning',head:'区域能源网络中心连续 3 轮贡献度为零',detail:'该节点 Fisher 权重已降至 0.00，连续 3 轮无有效贡献。节点在线但训练输出被服务端判定为无效——所有上传的原型向量与全局质心距离异常，K-Means 分配失败。可能原因：本地特征提取器过拟合或数据格式与联盟标准不一致。建议协调员联系该机构确认。',actions:[{label:'广播通知各机构',type:'primary'},{label:'标记已处理',type:'ghost'}],done:false},
+  {id:4,time:'09:47',level:'info',head:'系统检测到新型攻击模式',detail:'全局模型在某成员机构本地推理时检出未知攻击类型，置信度 87%。该攻击模式已通过原型机制自动纳入本轮全局模型——K-Means 聚类为其新增一个全局原型向量。所有成员机构下一轮同步后自动获得防御能力。该事件完全匿名：协调员无法获知来源机构、攻击类型及检出时间。',actions:[{label:'广播通知各机构',type:'primary'},{label:'标记已处理',type:'ghost'}],done:false},
+  {id:5,time:'09:02',level:'warning',head:'东部农信联合社本地检测率高于联盟均值 29pp',detail:'该节点本地检测率 74.1%，联盟全局均值 45.1%，差异 29pp 超过允许偏差 20pp。表明该机构本地数据分布与联盟存在显著差异。φ(t) 动态调度已自动增强该节点的本地个性化权重，防止全局对齐破坏其已有检测能力。此为正常保护机制，无需干预。',actions:[{label:'标记已处理',type:'ghost'}],done:false},
+  {id:6,time:'08:02',level:'warning',head:'区域能源网络中心离线超过 3 轮',detail:'最近一次心跳响应 07:45，已失联超过 6 小时。该节点部署于能源 SCADA 网络边界，离线后联盟缺少该机构的工控网络流量特征。建议协调员联系负责人（陈工 135-xxxx-7890）确认服务器状态。若 24h 内未恢复，建议从本轮训练中移除。',actions:[{label:'广播通知各机构',type:'primary'},{label:'标记已处理',type:'ghost'}],done:false},
+  {id:7,time:'06:22',level:'info',head:'省会城市商业银行完成定期本地模型校验',detail:'该校验每 10 轮触发一次。结果：(1) 数据分布 KL 散度 vs 上一周期 = 0.03（正常）；(2) 特征提取器输出维度 = 512（正常）；(3) 本地原型 vs 全局原型余弦相似度 = 0.87（正常）。行为评分 88，Fisher 权重 0.29，节点运行健康。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
+  {id:8,time:'02:30',level:'info',head:'第 38 轮联邦训练完成',detail:'全局检测率 45.1%（+1.2pp），耗时 4.2 min，参与节点 22/24。聚合权重前 5：省农商行 0.31 / 省会商行 0.29 / 南部农信 0.27 / 省政务云 0.25 / 东部农信 0.23。检测率回升表明上一轮降低 global_par 至 0.5 的调整已生效。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
+  {id:9,time:'昨天 22:15',level:'info',head:'第 37 轮联邦训练完成',detail:'全局检测率 43.9%（+0.8pp），耗时 4.1 min，参与节点 22/24。重点关注：市商行数据中心 Fisher 权重本轮异常下降（0.31→0.14→0.03），三连降趋势符合异常标记条件，建议持续监控。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
+  {id:10,time:'昨天 18:30',level:'warning',head:'省电力调度中心行为偏离 2.8σ',detail:'偏离度接近 3.0σ 警戒线。近 3 轮趋势：2.1σ→2.5σ→2.8σ（持续上升）。系统已自动纳入监控列表，若突破阈值将自动告警。暂无需手动干预，保持关注即可。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
+  {id:11,time:'昨天 14:30',level:'info',head:'省政务云安全中心完成季度数据质量审计',detail:'审计结果：训练数据覆盖 9 类攻击模式中的 8 类，缺少 Botnet 类样本。Botnet 缺失意味着对该类攻击的检测依赖全局知识迁移。建议在后续数据采集中补充 Botnet 流量。审计不影响当前训练。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
+  {id:12,time:'昨天 10:05',level:'info',head:'城市轨道交通控制中心完成首轮训练',detail:'该节点为联盟交通行业首个成员。首轮指标：行为评分 63（样本不足，可信度低），Fisher 权重 0.08。新节点初始权重通常较低，预计 5-8 轮训练后收敛至正常区间（预计 Fisher ~0.12-0.18）。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
+  {id:13,time:'前天 20:00',level:'info',head:'每周自动评估：平均检测率 44.2%',detail:'过去 7 天联盟整体运行评估。关键指标：(1) 平均检测率 44.2%，超过目标 42%；(2) 节点平均在线率 91.7%（24 节点中平均在线 22 个）；(3) 累计检出 23 类攻击变种，含 2 类新型；(4) Fisher 贡献度前 3：省农商行、省会商行、南部农信；(5) 无安全事件漏报。联盟整体健康。',actions:[{label:'标记已处理',type:'ghost'}],done:true},
+];
+
+function render(){
+  document.getElementById('timeline').innerHTML=events.map(e=>{
+    const cls='event-card event-'+e.level+(e.done?' event-done':'');
+    return `<div class="${cls}">
+      <div class="event-time">${e.time}</div>
+      <div class="event-body">
+        <div class="event-head">${e.head}</div>
+        <div class="event-detail" id="d-${e.id}">${e.detail}</div>
+        <div class="event-actions">
+          <button class="toggle-link" onclick="toggle(${e.id})" id="btn-${e.id}">查看详情</button>
+          ${e.actions.map(a=>`<button class="btn btn-sm btn-${a.type}" onclick="act(${e.id},'${a.label.includes('广播')?'b':a.label.includes('标记')?'d':'t'}')">${a.label}</button>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggle(id){
+  const d=document.getElementById('d-'+id);
+  const b=document.getElementById('btn-'+id);
+  if(d.classList.contains('show')){d.classList.remove('show');b.textContent='查看详情';}
+  else{d.classList.add('show');b.textContent='收起';}
+}
+
+function act(id,type){
+  const e=events.find(x=>x.id===id);if(!e||e.done)return;
+  const t=document.getElementById('toast');
+  if(type==='b'){t.innerHTML='<i class="fas fa-check-circle"></i> 已广播通知所有成员机构';t.className='toast show toast-success'}
+  else if(type==='d'){e.done=true;render();t.innerHTML='<i class="fas fa-check"></i> 已标记为已处理';t.className='toast show toast-success'}
+  else{t.innerHTML='<i class="fas fa-cog"></i> 已跳转到训练控制页面';t.className='toast show'}
+  setTimeout(()=>t.className='toast',2500);
+}
+render();
+</script>
+</body>
+</html>
