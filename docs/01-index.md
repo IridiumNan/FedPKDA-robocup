@@ -49,6 +49,7 @@ docs/                         ← 对外文档中心（比赛评审可查看）
 └── api/                      ← 按界面拆分的接口定义
     ├── 00-conventions.md     ← 通用约定
     ├── 01-overall.md         ← 平台概览
+    ├── 05-protocol-and-mapping.md ← 通信协议与算法映射
     ├── coordinator/          ← 协调员端
     │   ├── event-center.md   ← 事件中心
     │   ├── node-management.md← 节点管理

@@ -16,7 +16,8 @@
 | 04 | 协调员 · 训练控制 | [`docs/api/coordinator/training.md`](./api/coordinator/training.md) | `/coordinator/training/*`：状态、参数、贡献排行 |
 | 05 | 运营员 · 节点状态 | [`docs/api/operator/node-status.md`](./api/operator/node-status.md) | `/operator/node/*`：状态、参数、隔离/恢复 |
 | 06 | 运营员 · 训练控制 | [`docs/api/operator/training.md`](./api/operator/training.md) | `/operator/training/*`：状态、参数、标记观察 |
-| 07 | 系统架构 | — | 静态说明页面，无动态数据接口 |
+| 07 | 通信协议与算法映射 | [`docs/api/05-protocol-and-mapping.md`](./api/05-protocol-and-mapping.md) | 上下行数据链路、REST 接口 ↔ 算法函数映射 |
+| 08 | 系统架构 | — | 静态说明页面，无动态数据接口 |
 
 ---
 
@@ -25,7 +26,7 @@
 - 想知道接口通用规则（鉴权 / 错误码 / 时间格式）？ → [`00-conventions.md`](./api/00-conventions.md)
 - 想知道某个页面调哪些接口？ → 对照上表"界面"列进入对应文档
 - 想知道角色权限边界？ → [`04-role-design.md`](./04-role-design.md)
-- 想知道算法函数与前端展示的映射？ → [`05-system-architecture.md`](./05-system-architecture.md)
+- 想知道算法函数与前端展示的映射？ → [`05-protocol-and-mapping.md`](./api/05-protocol-and-mapping.md)
 
 ---
 
