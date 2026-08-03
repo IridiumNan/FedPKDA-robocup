@@ -35,7 +35,9 @@
 │   ├── 05-system-architecture.md # 系统架构与数据流
 │   ├── 06-competition-plan.md    # 比赛交付计划
 │   ├── 07-frontend-comparison.md # 前端方案对比
-│   └── 08-appendix-research.md   # 调研附录
+│   ├── 08-appendix-research.md   # 调研附录
+│   ├── 09-backend-api.md         # API 设计入口索引
+│   └── api/                      # 按界面拆分的接口定义
 ├── legacy_frontend/              # 原有前端（参考，不采用）
 ├── MVP_frontend/
 │   ├── dark/                     # 暗色主题原型
@@ -69,6 +71,7 @@
 - **角色设计与页面架构** → [`docs/04-role-design.md`](./docs/04-role-design.md)
 - **系统架构与数据流** → [`docs/05-system-architecture.md`](./docs/05-system-architecture.md)
 - **前端方案对比** → [`docs/07-frontend-comparison.md`](./docs/07-frontend-comparison.md) <- 当前的UI demo访问链接请看这里
+- **后端 API 设计** → [`docs/09-backend-api.md`](./docs/09-backend-api.md)
 - **交互原型** → `MVP_frontend/light/`
 
 - **前端参考提示** → [`pending/ui_design.md`](./pending/ui_design.md)

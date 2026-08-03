@@ -17,6 +17,7 @@
 | 06 | **比赛交付计划** | 第一轮比赛交付物清单、时间线、技术选型 | `practical_plan.md`（更新版） |
 | 07 | **前端方案对比** | Legacy 前端 vs MVP 设计的逐维对比分析 | `frontend_compare.md` |
 | 08 | **附录：调研与参考** | ISAC 治理模式调研、比赛规则分析 | `local/links.md` + `local/docs/prepare.md` |
+| 09 | **后端 API 设计** | 接口设计入口索引，按界面拆分的完整接口定义 | 从 `MVP_frontend/light/` 页面反推 |
 
 ---
 
@@ -28,6 +29,7 @@
 - **想看系统怎么运转？** → [05-系统架构与数据流](./05-system-architecture.md)
 - **想看比赛排期？** → [06-比赛交付计划](./06-competition-plan.md)
 - **想对比新旧前端？** → [07-前端方案对比](./07-frontend-comparison.md)
+- **想查后端接口定义？** → [09-后端 API 设计](./09-backend-api.md)
 
 ---
 
@@ -42,7 +44,18 @@ docs/                         ← 对外文档中心（比赛评审可查看）
 ├── 05-system-architecture.md ← 系统架构与数据流
 ├── 06-competition-plan.md    ← 比赛交付计划
 ├── 07-frontend-comparison.md ← 前端方案对比
-└── 08-appendix-research.md   ← 调研附录
+├── 08-appendix-research.md   ← 调研附录
+├── 09-backend-api.md         ← API 设计入口索引
+└── api/                      ← 按界面拆分的接口定义
+    ├── 00-conventions.md     ← 通用约定
+    ├── 01-overall.md         ← 平台概览
+    ├── coordinator/          ← 协调员端
+    │   ├── event-center.md   ← 事件中心
+    │   ├── node-management.md← 节点管理
+    │   └── training.md       ← 训练控制
+    └── operator/             ← 运营员端
+        ├── node-status.md    ← 节点状态
+        └── training.md       ← 训练控制
 
 MVP_frontend/                 ← 交互原型（HTML 页面）
 └── light/                    ← 亮色主题（当前版本）

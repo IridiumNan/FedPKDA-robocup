@@ -1,7 +1,7 @@
 # TODO — 作品交付物补充清单
 
 > 目标：完成作品说明书（PDF）与作品介绍（PPT）所需内容。
-> 现状对照：docs/ 8 篇设计文档 + MVP_frontend/light 前端原型已就绪，
+> 现状对照：docs/ 文档中心（9 篇 + api/ 接口文档）+ MVP_frontend/light 前端原型已就绪，
 > 下文按评分维度列出仍需补充的内容，P0 为说明书交付前必须完成项。
 
 ---
@@ -10,13 +10,17 @@
 
 ### 1. API 设计文档（交付物 D4，06 文档标注"待完成"）
 
-- [ ] 从 7 个前端页面反推接口清单（coordinator 4 页 + operator 3 页）
-- [ ] 定义 REST/WebSocket 端点：路径、方法、请求/响应 schema
-- [ ] 数据模型：node / prototype / event / training round / notification
-- [ ] 角色鉴权边界：协调员 vs 运营员的可见/可操作接口隔离
-- [ ] 错误码与异常处理约定
-- [ ] 与算法函数映射：`compute_global_prototypes()`、`get_noisy_local_prototypes()`、`set_parameters()`、`send_selected_models()`
-- [ ] 通信协议说明：上行（加噪原型）/ 下行（全局原型 + 模型）两条链路
+> ✅ 主体已完成：`docs/api/` 下 6 份文档、21 个接口，覆盖 6 个动态页面
+> （`docs/09-backend-api.md` 入口 + `00-conventions.md` 通用约定 + coordinator 3 份 + operator 2 份）。
+> 下方两项为尚未覆盖的补充内容。
+
+- [x] 从 6 个动态页面反推接口清单（架构页为静态页，已标注"无接口"）
+- [x] 定义 REST 端点：路径、方法、请求/响应 schema（刷新采用轮询，见 00-conventions）
+- [x] 数据模型：node / event / training round / notification（在各页面文档中定义）
+- [x] 角色鉴权边界：协调员 vs 运营员的可见/可操作接口隔离
+- [x] 错误码与异常处理约定
+- [ ] 与算法函数映射：`compute_global_prototypes()`、`get_noisy_local_prototypes()`、`set_parameters()`、`send_selected_models()`（现 05-system-architecture.md 有算法→前端映射，接口级映射待补）
+- [ ] 通信协议说明：上行（加噪原型）/ 下行（全局原型 + 模型）两条链路（建议在 docs/api/ 补一节协议说明）
 
 ### 2. 调研结果成稿（评分：市场调研和可行性分析 10 分）
 
@@ -78,7 +82,7 @@
 | 实验报告（Cifar100 + UNSW-NB15） | Cifar100 ✅ / UNSW-NB15 🔄 |
 | 前端原型 7 页 | ✅ |
 | 架构白皮书 docs/ | ✅ |
-| API 设计文档 | ⏳ TODO #1 |
+| API 设计文档 | ✅ `docs/api/` 6 份文档、21 个接口 |
 | 调研章节 | ⏳ TODO #2 |
 | 作品说明书 PDF | ⏳ 组装阶段 |
 | 演示 PPT | ⏳ TODO #6 |
