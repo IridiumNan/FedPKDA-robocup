@@ -72,3 +72,17 @@
 - **交互原型** → `MVP_frontend/light/`
 
 - **前端参考提示** → [`pending/ui_design.md`](./pending/ui_design.md)
+
+---
+
+## 查看当前的前端
+
+```bash
+git pull origin plan # 拉取更新
+
+# 进入前端目录
+cd MVP_frontend/light
+python -m http.server 8080
+```
+
+这个时候访问浏览器即可
