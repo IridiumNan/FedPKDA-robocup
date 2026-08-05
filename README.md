@@ -14,14 +14,16 @@
 
 ## 实验验证
 
-| 算法 | 模型 | 参数量 | 最佳精度 | vs FedAvg |
-| ------ | ------ | -------- | --------- | ----------- |
-| FedAvg | CNN | 5.6M | 27.8% | — |
-| **FedPKDA** | **CNN** | **5.6M** | **45.1%** | **+17.3pp** |
-| FedAvg | ResNet-18 | 11.2M | 24.9% | — |
-| **FedPKDA** | **ResNet-18** | **11.2M** | **42.1%** | **+17.2pp** |
+| 数据集 | 算法 | 最佳精度 | vs FedAvg |
+| ------ | ------ | -------- | --------- |
+| Cifar100 | FedAvg (CNN) | 27.87% | — |
+| Cifar100 | **FedPKDA (CNN)** | **45.29%** | **+17.42pp** |
+| Flowers102 | FedAvg (CNN) | 30.15% | — |
+| Flowers102 | **FedPKDA (CNN)** | **36.65%** | **+6.50pp** |
+| NSL-KDD | FedAvg (DNN) | 99.47% | — |
+| NSL-KDD | **FedPKDA (DNN)** | **99.75%** | **+0.28pp** |
 
-*Cifar100, 20 客户端, Dirichlet α=0.3, 40 轮*
+*15 组实验，覆盖 3 个数据集（Cifar100 / Flowers102 / NSL-KDD），单次运行，41-61 轮。完整报告见 [`docs/report/experiment/report.md`](./docs/report/experiment/report.md)，复现步骤见 [`experiment_explanation.md`](./docs/report/experiment/experiment_explanation.md)。*
 
 ## 项目结构
 

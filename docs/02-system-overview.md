@@ -119,4 +119,4 @@ FedPKDA 通过算法本身剥夺了数据被滥用的可能性——**信任基�
 
 - FedPKDA 在 CNN 和 ResNet-18 上均显著优于 FedAvg（+17pp）
 - 算法对大模型（ResNet-18）同样有效，具备生产级落地潜力
-- 更多实验（UNSW-NB15 网络安全数据集）进行中
+- 更多实验（NSL-KDD 网络安全数据集）已完成，见 [实验报告](../report/experiment/report.md)
