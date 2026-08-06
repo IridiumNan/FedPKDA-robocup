@@ -104,3 +104,17 @@
 6. 有多少种用户角色？（决定系统需要多少个不同的前端视角）
 7. 创新的挖掘点和迭代优化方向？
 8. 风险与稳定性评估：算法性能差怎么办？核心成员退出如何保证进度？
+
+---
+
+## 四、算法论文与深入解读参考
+
+> 说明书"算法设计"章节的引用来源：论文原文 + 算法复现仓库 + 论文深入解读。
+
+- **论文原文（AAAI 2026）**
+  - 标题：Personalized Federated Learning with Privacy-Preserving Knowledge Dynamic Alignment
+  - 算法仓库（实验可复现）：<https://github.com/IridiumNan/FedPKDA>
+- **论文深入解读仓库**
+  - <https://github.com/IridiumNan/fedpkda-presentation>
+  - 包含：联邦学习基础概念、问题痛点（DLG 梯度攻击 / Non-IID 数据异构 / 本地表示偏差）、FedPKDA 三模块方法全流程、差分隐私 ε 界 / 马氏距离滤波 / φ(t) 单调性数学证明、论文实验图
+  - 用途：说明书算法部分的理论细节与数学推导依据
