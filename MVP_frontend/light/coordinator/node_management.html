@@ -132,6 +132,7 @@ const edges = [
 let selectedNodeId = 'n08';
 let statusFilter = 'all';
 let showPayload = false;
+const sentPayloads = [];
 
 function getStatus(status) { return statusConfig.find(item => item.id === status) || statusConfig[3]; }
 function nodeById(id) { return nodes.find(node => node.id === id); }
@@ -195,7 +196,12 @@ function renderNodeInfo() {
   const status = getStatus(node.status);
   badge.className = `node-status-badge ${node.status}`;
   badge.textContent = status.short;
-  body.innerHTML = `<div class="fl-detail-hero"><div><strong>${node.name}</strong><em>${node.code} · ${node.scene}</em></div><button class="btn btn-sm btn-primary" onclick="openPayload()"><i class="fas fa-paper-plane"></i>发送通知</button></div><div class="fl-health-score"><div class="fl-score-ring" style="--score:${node.health}"><strong>${node.health || '--'}</strong><span>Health</span></div><div><h3>${status.label}</h3><p>${node.event}</p></div></div><div class="fl-runtime-grid"><div><span>CPU</span><strong>${t.cpu}%</strong><i><b style="width:${t.cpu}%"></b></i></div><div><span>GPU</span><strong>${t.gpu}%</strong><i><b style="width:${t.gpu}%"></b></i></div><div><span>Memory</span><strong>${t.memory}%</strong><i><b style="width:${t.memory}%"></b></i></div><div><span>通信延迟</span><strong>${t.latency ? t.latency + 'ms' : '--'}</strong><i><b style="width:${Math.max(8, Math.min(100, 100 - t.latency / 1.6))}%"></b></i></div><div><span>丢包率</span><strong>${t.packetLoss}%</strong><i><b style="width:${Math.min(100, t.packetLoss)}%"></b></i></div><div><span>训练轮次</span><strong>${t.round}</strong><i><b style="width:${t.round === '--' ? 0 : 95}%"></b></i></div><div><span>模型贡献度</span><strong>${t.contribution}</strong><i><b style="width:${t.contribution === '--' ? 0 : Math.min(100, parseFloat(t.contribution) * 100)}%"></b></i></div><div><span>通信质量</span><strong>${t.comm}</strong><i><b style="width:${node.status === 'offline' ? 0 : node.status === 'warning' ? 62 : 92}%"></b></i></div></div><div class="node-event-box"><span>当前任务</span><strong>${node.task}</strong></div>${showPayload ? payloadForm(node) : ''}`;
+  body.innerHTML = `<div class="fl-detail-hero"><div><strong>${node.name}</strong><em>${node.code} · ${node.scene}</em></div><button class="btn btn-sm btn-primary" onclick="openPayload()"><i class="fas fa-paper-plane"></i>发送通知</button></div><div class="fl-health-score"><div class="fl-score-ring" style="--score:${node.health}"><strong>${node.health || '--'}</strong><span>Health</span></div><div><h3>${status.label}</h3><p>${node.event}</p></div></div><div class="fl-runtime-grid"><div><span>CPU</span><strong>${t.cpu}%</strong><i><b style="width:${t.cpu}%"></b></i></div><div><span>GPU</span><strong>${t.gpu}%</strong><i><b style="width:${t.gpu}%"></b></i></div><div><span>Memory</span><strong>${t.memory}%</strong><i><b style="width:${t.memory}%"></b></i></div><div><span>通信延迟</span><strong>${t.latency ? t.latency + 'ms' : '--'}</strong><i><b style="width:${Math.max(8, Math.min(100, 100 - t.latency / 1.6))}%"></b></i></div><div><span>丢包率</span><strong>${t.packetLoss}%</strong><i><b style="width:${Math.min(100, t.packetLoss)}%"></b></i></div><div><span>训练轮次</span><strong>${t.round}</strong><i><b style="width:${t.round === '--' ? 0 : 95}%"></b></i></div><div><span>模型贡献度</span><strong>${t.contribution}</strong><i><b style="width:${t.contribution === '--' ? 0 : Math.min(100, parseFloat(t.contribution) * 100)}%"></b></i></div><div><span>通信质量</span><strong>${t.comm}</strong><i><b style="width:${node.status === 'offline' ? 0 : node.status === 'warning' ? 62 : 92}%"></b></i></div></div><div class="node-event-box"><span>当前任务</span><strong>${node.task}</strong></div>${renderNodeMessageStatus(node)}${showPayload ? payloadForm(node) : ''}`;
+}
+function renderNodeMessageStatus(node) {
+  const latest = sentPayloads.find(item => item.nodeId === node.id);
+  if (!latest) return '<div class="node-event-box"><span>通知状态</span><strong>暂无发送记录</strong></div>';
+  return `<div class="node-event-box"><span>通知状态</span><strong>${latest.type} · ${latest.priority} · 已发送 ${latest.time}</strong></div>`;
 }
 function payloadForm(node) {
   return `<form class="payload-form" onsubmit="submitPayload(event)"><div class="payload-form-head"><strong>发送通知</strong><span>Payload</span></div><div class="payload-grid"><label><span>通知类型</span><select id="payloadType" class="form-select"><option>状态检查</option><option>同步提醒</option><option>异常处理</option><option>接入确认</option></select></label><label><span>优先级</span><select id="payloadPriority" class="form-select"><option>${node.status === 'offline' ? '紧急' : node.status === 'warning' ? '较高' : '普通'}</option><option>普通</option><option>较高</option><option>紧急</option></select></label><label><span>目标节点</span><input id="payloadTarget" class="form-input" value="${node.code}" readonly /></label><label><span>备注，可选</span><input id="payloadNote" class="form-input" placeholder="补充说明" /></label></div><label class="payload-full"><span>payload 内容</span><textarea id="payloadText" class="form-input" rows="4">${node.payload}</textarea></label><div class="payload-actions"><button class="btn btn-sm btn-ghost" type="button" onclick="closePayload()">取消</button><button class="btn btn-sm btn-primary" type="submit"><i class="fas fa-paper-plane"></i>发送</button></div></form>`;
@@ -209,7 +215,22 @@ function selectNode(id) {
 }
 function openPayload() { if (!selectedNodeId) return; showPayload = true; renderNodeInfo(); }
 function closePayload() { showPayload = false; renderNodeInfo(); }
-function submitPayload(event) { event.preventDefault(); showPayload = false; renderNodeInfo(); toast('通知已发送，payload 已记录'); }
+function submitPayload(event) {
+  event.preventDefault();
+  const node = nodeById(selectedNodeId);
+  if (!node) return;
+  sentPayloads.unshift({
+    nodeId: node.id,
+    type: document.getElementById('payloadType').value,
+    priority: document.getElementById('payloadPriority').value,
+    target: document.getElementById('payloadTarget').value,
+    note: document.getElementById('payloadNote').value.trim(),
+    time: new Date().toLocaleTimeString('zh-CN', { hour12:false })
+  });
+  showPayload = false;
+  renderNodeInfo();
+  toast('通知已发送，节点详情已记录状态');
+}
 function renderHealthGauge() {
   const activeNodes = nodes.filter(node => node.health > 0);
   const avgRaw = activeNodes.reduce((sum, node) => sum + node.health, 0) / activeNodes.length;
