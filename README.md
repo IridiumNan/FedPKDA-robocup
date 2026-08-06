@@ -46,7 +46,7 @@
 │   └── light/
 │       ├── coordinator/          # 联盟协调员端
 │       │   ├── event_center      # 事件中心 — 自动告警 + 广播通知
-│       │   ├── node_management   # 节点管理 — 24 机构管理
+│       │   ├── node_management   # 节点管理 — 多机构管理
 │       │   ├── training          # 训练控制 — 全局参数 + 贡献度
 │       │   └── architecture      # 系统架构 — 工作流程 + 价值说明
 │       └── operator/             # 机构运营员端
