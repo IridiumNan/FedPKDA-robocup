@@ -5,13 +5,74 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>事件中心 · 联盟协调员 · FedPKDA</title>
 <link rel="stylesheet" href="../style.css" />
+<style>
+.icon-action.notify-toggle { position: relative; }
+.icon-action.notify-toggle .action-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 0 0 2px #fff;
+}
+.notify-stack { display: grid; gap: 10px; }
+.notify-entry {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid rgba(148,163,184,0.18);
+  border-radius: 8px;
+  background: #fff;
+}
+.notify-entry.is-unread {
+  border-color: rgba(37,99,235,0.18);
+  background: #f8fbff;
+}
+.notify-entry-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  color: #64748b;
+  font-size: 0.72rem;
+}
+.notify-entry-title {
+  color: #111827;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.notify-entry-meta {
+  color: #64748b;
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+.notify-empty {
+  padding: 12px 14px;
+  border: 1px dashed rgba(148,163,184,0.28);
+  border-radius: 8px;
+  background: rgba(248,250,252,0.86);
+  color: #64748b;
+  font-size: 0.8rem;
+}
+</style>
 </head>
 <body class="layout risk-dashboard fed-dashboard">
 <aside class="sidebar">
   <div class="sidebar-logo"><i class="fas fa-shield-halved"></i>Fed<span>PKDA</span></div>
   <nav class="sidebar-nav">
     <a href="../index.html" class="nav-item"><i class="fas fa-house"></i>平台概览</a>
-    <a href="event_center.html" class="nav-item active"><i class="fas fa-bell"></i>事件中心<span class="nav-badge">4</span></a>
+    <a href="event_center.html" class="nav-item active"><i class="fas fa-bell"></i>事件中心<span id="navPendingCount" class="nav-badge">4</span></a>
     <a href="node_management.html" class="nav-item"><i class="fas fa-network-wired"></i>节点管理</a>
     <a href="training.html" class="nav-item"><i class="fas fa-microchip"></i>训练控制</a>
     <a href="architecture.html" class="nav-item"><i class="fas fa-project-diagram"></i>系统架构</a>
@@ -29,10 +90,22 @@
     <div class="dashboard-header-actions">
       <div class="dashboard-time"><span>当前时间</span><strong id="currentTime">--:--:--</strong></div>
       <span class="system-online"><i></i>System Online</span>
-      <button class="icon-action" type="button" onclick="toast('通知中心暂无新消息')" aria-label="通知入口"><i class="fas fa-bell"></i></button>
+      <button id="notifyToggle" class="icon-action notify-toggle" type="button" onclick="toggleNotifyPanel()" aria-label="通知中心" aria-expanded="false"><i class="fas fa-bell"></i><span id="notifyUnreadBadge" class="action-badge" hidden>0</span></button>
       <button class="btn btn-sm btn-primary" type="button" onclick="refreshDashboard()"><i class="fas fa-rotate"></i>刷新</button>
     </div>
   </header>
+
+  <section id="notifyPanel" class="notify-panel" aria-labelledby="notifyTitle">
+    <div class="event-list-heading">
+      <div class="event-list-heading-left">
+        <h2 id="notifyTitle">信息中心</h2>
+        <span id="notifyCountChip" class="event-count-chip">0 条未读</span>
+      </div>
+      <span class="event-list-hint">广播通知、关注标记和摘要会保留最近 5 条。</span>
+    </div>
+    <div id="notifyList" class="notify-stack"></div>
+    <div id="notifyEmpty" class="notify-empty">当前没有新的通知。</div>
+  </section>
 
   <section class="risk-kpi-grid" aria-label="事件中心关键指标">
     <article class="risk-kpi-card primary"><div class="risk-kpi-top"><span><i class="fas fa-inbox"></i>待处理事件</span><em>↑12% compared yesterday</em></div><div class="risk-kpi-value"><strong id="statPending">4</strong><small>Pending</small></div><svg viewBox="0 0 140 42" aria-hidden="true"><polyline points="0,31 18,27 36,29 54,19 72,22 90,13 108,18 126,8 140,11"></polyline></svg><span class="risk-kpi-chip warning">需要响应</span></article>
@@ -103,9 +176,22 @@ const events = [
   { id:3, type:'watch', time:'11:08', duration:'连续 3 轮', title:'能源网络中心连续 3 轮贡献度为零', source:'ENG-NET-02 · 能源节点', status:'关注', statusClass:'warning', metrics:[['Fisher','0.00'],['活跃率','91.7%']], detail:'该节点在线但训练输出长期无有效贡献，系统已标记为观察对象。协调员只能发出建议，隔离或恢复操作由机构运营员执行。', primary:'标记关注' },
   { id:4, type:'normal', time:'09:40', duration:'已完成', title:'第 38 轮联邦训练完成', source:'训练系统 · 第 38 轮', status:'已记录', statusClass:'info', metrics:[['检测率','45.1%'],['轮次','38/40']], detail:'全局检测率 45.1%，较上一轮提升 1.2pp。Fisher 权重前 3 节点来自金融、政务与能源行业。', primary:'查看摘要', done:true }
 ];
-categories.forEach(cat => { cat.count = events.filter(ev => ev.type === cat.id).length; });
+const notifications = [];
 const priorityOrder = { risk:0, watch:1, normal:2, other:3 };
-let selectedType = categories.filter(cat => cat.count > 0).sort((a, b) => b.count - a.count || priorityOrder[a.id] - priorityOrder[b.id])[0].id;
+function recalcCounts() {
+  categories.forEach(cat => {
+    cat.total = events.filter(ev => ev.type === cat.id).length;
+    cat.count = events.filter(ev => ev.type === cat.id && !ev.done).length;
+  });
+}
+function defaultSelectedType() {
+  const active = categories.filter(cat => cat.count > 0).sort((a, b) => b.count - a.count || priorityOrder[a.id] - priorityOrder[b.id])[0];
+  if (active) return active.id;
+  const recorded = categories.filter(cat => cat.total > 0).sort((a, b) => b.total - a.total || priorityOrder[a.id] - priorityOrder[b.id])[0];
+  return recorded ? recorded.id : categories[0].id;
+}
+recalcCounts();
+let selectedType = defaultSelectedType();
 
 function pointOnCircle(cx, cy, r, angle) {
   const rad = (angle - 90) * Math.PI / 180;
@@ -135,7 +221,7 @@ function renderDonut() {
     const end = (cumulative + cat.count) / total * 360;
     const percent = Math.round(cat.count / total * 100);
     cumulative += cat.count;
-    return `<path class="event-donut-segment${selectedType === cat.id ? ' active' : ''}" data-type="${cat.id}" d="${donutPath(start, end)}" fill="${cat.color}" tabindex="0" role="button" aria-label="${cat.name} ${cat.count} 个事件，${percent}%"></path>`;
+    return `<path class="event-donut-segment${selectedType === cat.id ? ' active' : ''}" data-type="${cat.id}" d="${donutPath(start, end)}" fill="${cat.color}" tabindex="0" role="button" aria-label="${cat.name} ${cat.count} 个待处理事件，${percent}%"></path>`;
   }).join('');
 }
 function renderLegend() {
@@ -156,26 +242,31 @@ function renderRankList() {
 function renderList() {
   const cat = categories.find(item => item.id === selectedType);
   const list = document.getElementById('eventList');
+  const activeEvents = events.filter(ev => ev.type === selectedType && !ev.done);
   document.getElementById('selectedTypeTitle').textContent = cat.name;
-  document.getElementById('selectedTypeCount').textContent = cat.count + ' 个事件';
-  if (!cat.count) {
-    list.innerHTML = `<div class="event-empty risk-empty"><i class="fas fa-${cat.icon}"></i><strong>暂无${cat.name}</strong><span>当前没有需要展示的事件。</span></div>`;
+  document.getElementById('selectedTypeCount').textContent = cat.count + ' 个待处理事件';
+  if (!activeEvents.length) {
+    list.innerHTML = `<div class="event-empty risk-empty"><i class="fas fa-${cat.icon}"></i><strong>暂无待处理${cat.name}</strong><span>当前没有该类型待处理事件。</span></div>`;
     return;
   }
-  list.innerHTML = events.filter(ev => ev.type === selectedType).map(eventCard).join('');
+  list.innerHTML = activeEvents.map(eventCard).join('');
 }
 function eventCard(ev) {
   const level = ev.type === 'risk' ? 'HIGH' : ev.type === 'watch' ? 'WATCH' : 'INFO';
   const levelClass = ev.type === 'risk' ? 'danger' : ev.type === 'watch' ? 'warning' : 'info';
+  const actionLabel = ev.type === 'risk' ? (ev.notified ? '已广播' : '广播通知') : ev.type === 'watch' ? (ev.notified ? '已关注' : '标记关注') : '查看摘要';
+  const actionClass = ev.type === 'risk' ? 'btn-danger' : ev.type === 'watch' ? 'btn-ghost' : 'btn-primary';
+  const actionState = ev.notified && ev.type !== 'normal' ? `<span class="event-status-pill info">${ev.type === 'risk' ? '已广播' : '已关注'}</span>` : '';
+  const actionDisabled = ev.notified && ev.type !== 'normal' ? 'disabled' : '';
   return `<article class="risk-timeline-card severity-${levelClass}${ev.done ? ' is-done' : ''}">
     <div class="risk-level-dot ${levelClass}"><i></i><span>${level}</span></div>
     <div class="risk-timeline-content">
-      <header><h3>${ev.title}</h3><span>${ev.status}</span></header>
+      <header><h3>${ev.title}</h3><span>${ev.status}</span>${actionState}</header>
       <div class="risk-event-meta"><span><i class="fas fa-clock"></i>${ev.time}</span><span><i class="fas fa-server"></i>${ev.source}</span></div>
       <div class="risk-event-metrics">${ev.metrics.map(metric => `<div><em>${metric[0]}</em><strong>${metric[1]}</strong></div>`).join('')}</div>
       <div class="risk-event-detail" id="event-detail-${ev.id}" hidden>${ev.detail}</div>
     </div>
-    <div class="risk-timeline-actions"><button class="btn btn-sm btn-ghost" onclick="toggleDetail(${ev.id})" id="event-toggle-${ev.id}" aria-expanded="false">查看详情</button><button class="btn btn-sm btn-primary" onclick="markDone(${ev.id})" ${ev.done ? 'disabled' : ''}>处理</button><button class="btn btn-sm ${ev.type === 'risk' ? 'btn-danger' : 'btn-ghost'}" onclick="handleEvent(${ev.id})">通知</button></div>
+    <div class="risk-timeline-actions"><button class="btn btn-sm btn-ghost" onclick="toggleDetail(${ev.id})" id="event-toggle-${ev.id}" aria-expanded="false">查看详情</button><button class="btn btn-sm btn-primary" onclick="markDone(${ev.id})">标记处理</button><button class="btn btn-sm ${actionClass}" onclick="handleEvent(${ev.id})" ${actionDisabled}>${actionLabel}</button></div>
   </article>`;
 }
 function renderRiskTrend() {
@@ -195,18 +286,68 @@ function renderRiskTrend() {
   document.getElementById('riskTrendChart').innerHTML = `<defs><linearGradient id="riskTrendFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2563EB" stop-opacity="0.22"></stop><stop offset="100%" stop-color="#2563EB" stop-opacity="0"></stop></linearGradient></defs><g class="trend-grid"><line x1="28" y1="52" x2="612" y2="52"></line><line x1="28" y1="110" x2="612" y2="110"></line><line x1="28" y1="168" x2="612" y2="168"></line></g><polygon class="trend-area" points="${area}"></polygon><polyline class="trend-line" points="${line}"></polyline>${points.map((point, index) => `<circle class="trend-point" cx="${point[0]}" cy="${point[1]}" r="4"><title>${index * 2}:00 风险事件 ${values[index]}</title></circle>`).join('')}<g class="trend-axis"><text x="28" y="206">00:00</text><text x="292" y="206">12:00</text><text x="574" y="206">24:00</text></g>`;
 }
 function render() {
+  recalcCounts();
   renderDonut();
   renderLegend();
   renderRankList();
   renderList();
   renderRiskTrend();
   refreshStats();
+  renderNotifications();
 }
 function refreshStats() {
   const pending = events.filter(ev => !ev.done).length;
   const highRisk = events.filter(ev => ev.type === 'risk' && !ev.done).length;
   document.getElementById('statPending').textContent = pending;
   document.getElementById('statHighRisk').textContent = highRisk;
+  document.getElementById('navPendingCount').textContent = pending;
+}
+function renderNotifications() {
+  const unread = notifications.filter(item => !item.read).length;
+  const badge = document.getElementById('notifyUnreadBadge');
+  badge.textContent = unread;
+  badge.hidden = unread === 0;
+  document.getElementById('notifyCountChip').textContent = unread + ' 条未读';
+  const list = document.getElementById('notifyList');
+  const empty = document.getElementById('notifyEmpty');
+  if (!notifications.length) {
+    list.innerHTML = '';
+    empty.hidden = false;
+    return;
+  }
+  empty.hidden = true;
+  list.innerHTML = notifications.slice(0, 5).map(item => `<article class="notify-entry${item.read ? '' : ' is-unread'}">
+    <div class="notify-entry-head"><strong>${item.action}</strong><span>${item.time}</span></div>
+    <div class="notify-entry-title">${item.title}</div>
+    <div class="notify-entry-meta">${item.source} · ${item.state}</div>
+  </article>`).join('');
+}
+function setNotifyPanel(open, markRead = false) {
+  const panel = document.getElementById('notifyPanel');
+  panel.classList.toggle('show', open);
+  document.getElementById('notifyToggle').setAttribute('aria-expanded', String(open));
+  if (open && markRead) {
+    notifications.forEach(item => { item.read = true; });
+    renderNotifications();
+  }
+}
+function toggleNotifyPanel() {
+  const panel = document.getElementById('notifyPanel');
+  setNotifyPanel(!panel.classList.contains('show'), true);
+}
+function pushNotification(ev, action, state) {
+  notifications.unshift({
+    id: Date.now() + '-' + ev.id,
+    action,
+    title: ev.title,
+    source: ev.source,
+    state,
+    time: new Date().toLocaleTimeString('zh-CN', { hour12:false }),
+    read: false
+  });
+  if (notifications.length > 5) notifications.length = 5;
+  renderNotifications();
+  setNotifyPanel(true, false);
 }
 function selectType(type) {
   if (type === selectedType) return;
@@ -223,12 +364,36 @@ function toggleDetail(id) {
 function handleEvent(id) {
   const ev = events.find(item => item.id === id);
   if (!ev) return;
-  toast((ev.primary === '查看摘要' ? '事件摘要已打开' : '通知已推送，等待节点确认'));
+  if (ev.type === 'normal') {
+    toggleDetail(id);
+    toast('事件摘要已展开');
+    return;
+  }
+  if (ev.done) {
+    toast('事件已处理，无需重复发送');
+    return;
+  }
+  if (ev.notified) {
+    toast('信息中心已有该事件的发送记录');
+    return;
+  }
+  ev.notified = true;
+  if (ev.type === 'risk') {
+    pushNotification(ev, '广播通知', '已推送给成员机构运营员');
+    toast('广播通知已发送，信息中心已更新');
+  } else {
+    pushNotification(ev, '关注标记', '已同步为关注状态');
+    toast('关注状态已记录，信息中心已更新');
+  }
+  render();
 }
 function markDone(id) {
   const ev = events.find(item => item.id === id);
   if (!ev || ev.done) return;
   ev.done = true;
+  ev.status = '已处理';
+  ev.statusClass = 'info';
+  pushNotification(ev, '处理闭环', '已从待处理列表移出');
   render();
   toast('事件已进入处理闭环');
 }
@@ -251,7 +416,7 @@ function showTooltip(cat, event) {
   const tooltip = document.getElementById('eventAnalysisTooltip');
   const total = categories.reduce((sum, item) => sum + item.count, 0);
   const percent = total ? Math.round(cat.count / total * 100) : 0;
-  tooltip.innerHTML = `<strong>${cat.name}</strong><span>${cat.count} 个事件 · ${percent}%</span>`;
+  tooltip.innerHTML = `<strong>${cat.name}</strong><span>${cat.count} 个待处理事件 · ${percent}%</span>`;
   tooltip.hidden = false;
   tooltip.style.left = event.clientX + 12 + 'px';
   tooltip.style.top = event.clientY + 12 + 'px';
