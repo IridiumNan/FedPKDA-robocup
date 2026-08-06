@@ -26,29 +26,25 @@
   </div>
 
   <div class="grid-4">
-    <div class="card stat-card accent-blue"><div class="card-h"><i class="fas fa-layer-group"></i>训练轮次</div><div class="stat-number">38<span class="stat-unit">/40</span></div><div class="stat-label">平均 4.2 min/轮 · 预计 8 min 结束</div></div>
-    <div class="card stat-card accent-success"><div class="card-h"><i class="fas fa-bullseye"></i>全局检测率</div><div class="stat-number">45.1<span class="stat-unit">%</span></div><div class="stat-label trend-up"><i class="fas fa-arrow-up"></i> +1.2pp vs 上轮</div></div>
-    <div class="card stat-card"><div class="card-h"><i class="fas fa-scale-balanced"></i>动态调度 α(t)</div><div class="stat-number stat-word">全局泛化</div><div class="meter"><div class="meter-bar good" style="width:85%"></div></div><div class="stat-label">local_par=0.2 · global_par=0.8</div></div>
-    <div class="card stat-card accent-success"><div class="card-h"><i class="fas fa-gauge-high"></i>训练效率</div><div class="stat-number">95<span class="stat-unit">%</span></div><div class="stat-label trend-up"><i class="fas fa-arrow-up"></i> 今日闭环稳定</div></div>
+    <div class="card stat-card accent-blue"><div class="card-h"><i class="fas fa-layer-group"></i>训练轮次</div><div class="stat-number" id="statRound">--<span class="stat-unit">/--</span></div><div class="stat-label" id="statRoundLabel">--</div></div>
+    <div class="card stat-card accent-success"><div class="card-h"><i class="fas fa-bullseye"></i>全局检测率</div><div class="stat-number" id="statAcc">--<span class="stat-unit">%</span></div><div class="stat-label trend-up" id="statAccTrend">--</div></div>
+    <div class="card stat-card"><div class="card-h"><i class="fas fa-scale-balanced"></i>动态调度 α(t)</div><div class="stat-number stat-word" id="statAlphaState">--</div><div class="meter"><div class="meter-bar good" id="alphaBar" style="width:85%"></div></div><div class="stat-label" id="statAlphaLabel">--</div></div>
+    <div class="card stat-card accent-success"><div class="card-h"><i class="fas fa-gauge-high"></i>训练效率</div><div class="stat-number" id="statEfficiency">--<span class="stat-unit">%</span></div><div class="stat-label trend-up" id="statEfficiencyLabel">--</div></div>
   </div>
 
   <div class="grid-2">
     <section class="card line-chart-card">
-      <div class="card-h card-h-split"><span><i class="fas fa-chart-line"></i>训练趋势</span><span class="badge badge-green">稳定提升</span></div>
-      <svg class="area-chart" viewBox="0 0 760 220" preserveAspectRatio="none" aria-label="全局检测率趋势图">
-        <defs><linearGradient id="coordArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#2563eb" stop-opacity="0.28"/><stop offset="100%" stop-color="#2563eb" stop-opacity="0.02"/></linearGradient></defs>
-        <path d="M0,206 L30,196 L60,184 L90,170 L120,154 L150,140 L180,130 L210,120 L240,112 L270,104 L300,98 L330,92 L360,86 L390,80 L420,76 L450,72 L480,68 L510,64 L540,60 L570,56 L600,52 L630,48 L660,44 L690,40 L720,36 L760,32 L760,220 L0,220 Z" fill="url(#coordArea)"/>
-        <path d="M0,206 L30,196 L60,184 L90,170 L120,154 L150,140 L180,130 L210,120 L240,112 L270,104 L300,98 L330,92 L360,86 L390,80 L420,76 L450,72 L480,68 L510,64 L540,60 L570,56 L600,52 L630,48 L660,44 L690,40 L720,36 L760,32" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/>
-      </svg>
-      <div class="chart-legend"><span><i class="legend-dot" style="background:#2563eb"></i>全局检测率</span><span><i class="legend-dot" style="background:#10b981"></i>目标线 42%</span><span>第 38 轮：45.1%</span></div>
+      <div class="card-h card-h-split"><span><i class="fas fa-chart-line"></i>训练趋势</span><span class="badge badge-green" id="trendBadge">FedPKDA</span></div>
+      <svg id="trainingTrendChart" class="area-chart" viewBox="0 0 760 220" preserveAspectRatio="none" aria-label="FedPKDA 训练趋势图"></svg>
+      <div class="chart-legend" id="trendLegend"></div>
     </section>
 
     <section class="card">
       <div class="card-h"><i class="fas fa-sliders-h"></i>全局参数控制</div>
       <div class="control-stack">
-        <div class="control-item"><div class="control-head"><strong>Global Alignment Weight</strong><span class="control-value" id="globalValue">0.50</span></div><input id="globalRange" type="range" min="0" max="100" value="50" style="width:100%;" oninput="syncRange('global')" /><div class="control-feedback" id="globalFeedback">当前为平衡策略：兼顾联盟泛化与机构个性化。</div></div>
-        <div class="control-item"><div class="control-head"><strong>Participation Ratio</strong><span class="control-value" id="joinValue">0.20</span></div><input id="joinRange" type="range" min="5" max="100" value="20" style="width:100%;" oninput="syncRange('join')" /><div class="control-feedback" id="joinFeedback">每轮约 5/24 节点参与，通信成本较低。</div></div>
-        <div class="control-item"><div class="control-head"><strong>Anomaly Threshold</strong><span class="control-value" id="thresholdValue">3.0σ</span></div><input id="thresholdRange" type="range" min="15" max="50" value="30" style="width:100%;" oninput="syncRange('threshold')" /><div class="control-feedback" id="thresholdFeedback">当前阈值适中，误报与漏报风险平衡。</div></div>
+        <div class="control-item"><div class="control-head"><strong>全局对齐权重</strong><span class="control-value" id="globalValue">0.50</span></div><input id="globalRange" type="range" min="0" max="100" value="50" style="width:100%;" oninput="syncRange('global')" /><div class="control-feedback" id="globalFeedback">当前为平衡策略：兼顾联盟泛化与机构个性化。</div></div>
+        <div class="control-item"><div class="control-head"><strong>参与比例</strong><span class="control-value" id="joinValue">0.20</span></div><input id="joinRange" type="range" min="5" max="100" value="20" style="width:100%;" oninput="syncRange('join')" /><div class="control-feedback" id="joinFeedback">每轮约 5/24 节点参与，通信成本较低。</div></div>
+        <div class="control-item"><div class="control-head"><strong>异常检测阈值</strong><span class="control-value" id="thresholdValue">3.0σ</span></div><input id="thresholdRange" type="range" min="15" max="50" value="30" style="width:100%;" oninput="syncRange('threshold')" /><div class="control-feedback" id="thresholdFeedback">当前阈值适中，误报与漏报风险平衡。</div></div>
       </div>
       <div class="operation-bar" style="margin-top:16px;"><span class="small-meta">调整不会立即中断当前训练，将在下一轮生效。</span><button class="btn btn-primary" onclick="toast('全局参数已保存，将在下一轮训练生效')"><i class="fas fa-check"></i>应用到下一轮</button></div>
     </section>
@@ -56,17 +52,249 @@
 
   <section class="card">
     <div class="card-h"><i class="fas fa-weight-hanging"></i>Fisher 贡献度排行</div>
-    <table class="table"><tr><td><span class="status-dot online"></span>省农商行清算中心</td><td><strong>0.31</strong></td><td><div class="meter"><div class="meter-bar good" style="width:100%"></div></div></td></tr><tr><td><span class="status-dot online"></span>省会城市商业银行</td><td><strong>0.29</strong></td><td><div class="meter"><div class="meter-bar good" style="width:94%"></div></div></td></tr><tr><td><span class="status-dot warning"></span>商行数据中心</td><td><strong>0.03</strong></td><td><div class="meter"><div class="meter-bar warn" style="width:10%"></div></div></td></tr><tr><td><span class="status-dot offline"></span>区域能源网络中心</td><td><strong>0.00</strong></td><td><div class="meter"><div class="meter-bar bad" style="width:0%"></div></div></td></tr></table>
+    <table class="table" id="contributionTable"></table>
   </section>
   <div id="toast" class="toast"></div>
 </main>
 <script>
-function syncRange(type){
-  if(type==='global') { const v=document.getElementById('globalRange').value/100; document.getElementById('globalValue').textContent=v.toFixed(2); document.getElementById('globalFeedback').textContent=v>0.7?'偏向全局泛化，适合联盟整体检测率下滑时使用。':v<0.35?'偏向本地个性化，适合机构差异较大时使用。':'当前为平衡策略：兼顾联盟泛化与机构个性化。'; }
-  if(type==='join') { const v=document.getElementById('joinRange').value/100; document.getElementById('joinValue').textContent=v.toFixed(2); document.getElementById('joinFeedback').textContent='每轮约 '+Math.max(1,Math.round(v*24))+'/24 节点参与，通信成本随比例上升。'; }
-  if(type==='threshold') { const v=document.getElementById('thresholdRange').value/10; document.getElementById('thresholdValue').textContent=v.toFixed(1)+'σ'; document.getElementById('thresholdFeedback').textContent=v<2.5?'更敏感，适合快速发现异常但可能增加误报。':v>3.8?'更宽松，适合降低误报但可能延迟发现异常。':'当前阈值适中，误报与漏报风险平衡。'; }
+const trainingSource = { dataset: 'NSLKDD', algorithm: 'Fedpkda', goal: 'nslkdd_fedpkda_dnn_lr5e-3', totalRound: 61 };
+const trainingSeries = [
+  { round: 0, acc: 0.010794243070362473, loss: 4.606217399319339 },
+  { round: 1, acc: 0.042244136460554374, loss: 4.364163881027456 },
+  { round: 2, acc: 0.07042910447761194, loss: 4.165894115409524 },
+  { round: 3, acc: 0.12040245202558636, loss: 3.796359765278531 },
+  { round: 4, acc: 0.146455223880597, loss: 3.5779472607367806 },
+  { round: 5, acc: 0.16554587550200804, loss: 3.4228821116399196 },
+  { round: 6, acc: 0.19136791495198903, loss: 3.2805784811058396 },
+  { round: 7, acc: 0.2056915301464257, loss: 3.108281077081446 },
+  { round: 8, acc: 0.2248975851420118, loss: 2.965427521010842 },
+  { round: 9, acc: 0.24148886401037172, loss: 2.856591678112313 },
+  { round: 10, acc: 0.25605578107606685, loss: 2.739257315128843 },
+  { round: 11, acc: 0.2675525232188145, loss: 2.622415806463868 },
+  { round: 12, acc: 0.2811194402845096, loss: 2.547807830365298 },
+  { round: 13, acc: 0.29355632711621236, loss: 2.431632198867187 },
+  { round: 14, acc: 0.3053386593661909, loss: 2.342135211770149 },
+  { round: 15, acc: 0.31642021276595747, loss: 2.2578690369697394 },
+  { round: 16, acc: 0.3277953033689717, loss: 2.176501184603293 },
+  { round: 17, acc: 0.3386280157116378, loss: 2.096492632314259 },
+  { round: 18, acc: 0.35022649572649574, loss: 2.0069084341104747 },
+  { round: 19, acc: 0.3620665858495953, loss: 1.9345367184709448 },
+  { round: 20, acc: 0.3738632629107981, loss: 1.8545379918276098 },
+  { round: 21, acc: 0.3857719647751997, loss: 1.7761706833100925 },
+  { round: 22, acc: 0.3966845878136201, loss: 1.7066329211123814 },
+  { round: 23, acc: 0.407777592204088, loss: 1.643685518730829 },
+  { round: 24, acc: 0.4182640335429769, loss: 1.5885141257331673 },
+  { round: 25, acc: 0.4279750133725596, loss: 1.5309047421388481 },
+  { round: 26, acc: 0.4349650756694956, loss: 1.488273346339665 },
+  { round: 27, acc: 0.4397729007633588, loss: 1.4481019331963366 },
+  { round: 28, acc: 0.44277217553550846, loss: 1.4023656495222872 },
+  { round: 29, acc: 0.444884886985574, loss: 1.3615798755468646 },
+  { round: 30, acc: 0.44695790060860465, loss: 1.3265732560246212 },
+  { round: 31, acc: 0.44271608736615313, loss: 1.3037324963146682 },
+  { round: 32, acc: 0.44028167852922674, loss: 1.2871410763420755 },
+  { round: 33, acc: 0.4394853872424496, loss: 1.2767549349427444 },
+  { round: 34, acc: 0.4413289902280146, loss: 1.2591130805077462 },
+  { round: 35, acc: 0.44265661299569824, loss: 1.2384237296788615 },
+  { round: 36, acc: 0.44363006396588484, loss: 1.2626302023203788 },
+  { round: 37, acc: 0.44529584221748403, loss: 1.233282435604267 },
+  { round: 38, acc: 0.4459621535181237, loss: 1.2049621646955837 },
+  { round: 39, acc: 0.4499600213219616, loss: 1.1593824359656486 },
+  { round: 40, acc: 0.4528917910447761, loss: 1.1167868011149285 }
+];
+const contributionRanking = [
+  { node_code: 'BANK-COM-03', node_name: '商行数据中心', contribution: 0.31, status: 'online' },
+  { node_code: 'BANK-COM-01', node_name: '省会城市商业银行', contribution: 0.29, status: 'online' },
+  { node_code: 'BANK-COM-02', node_name: '省级清算节点', contribution: 0.03, status: 'warning' },
+  { node_code: 'ENG-PWR-03', node_name: '区域能源网络中心', contribution: 0.00, status: 'offline' }
+];
+trainingSource.dataset = 'NSLKDD';
+trainingSource.goal = 'nslkdd_fedpkda_dnn_lr5e-3';
+trainingSource.totalRound = 61;
+trainingSeries.splice(0, trainingSeries.length,
+  { round: 0, acc: 0.4808660759970915, loss: 0.8432298843388316 },
+  { round: 1, acc: 0.7843966283359814, loss: 0.38155398390342954 },
+  { round: 2, acc: 0.9671451269760052, loss: 0.09800054777978792 },
+  { round: 3, acc: 0.97301591576226, loss: 0.08086691437916674 },
+  { round: 4, acc: 0.9793445183529476, loss: 0.07034891807118054 },
+  { round: 5, acc: 0.9793714485767376, loss: 0.06988150599959517 },
+  { round: 6, acc: 0.9794522392481082, loss: 0.06904281715537174 },
+  { round: 7, acc: 0.9795060996956885, loss: 0.06883176245899968 },
+  { round: 8, acc: 0.9795868903670589, loss: 0.06844372093635517 },
+  { round: 9, acc: 0.9966875824738104, loss: 0.011439789396702645 },
+  { round: 10, acc: 0.9966606522500202, loss: 0.01128000787590828 },
+  { round: 11, acc: 0.9967145126976005, loss: 0.011164855175644759 },
+  { round: 12, acc: 0.9968491638165513, loss: 0.010535841927874658 },
+  { round: 13, acc: 0.9968491638165513, loss: 0.01025919445562045 },
+  { round: 14, acc: 0.996795303368971, loss: 0.010042458613922922 },
+  { round: 15, acc: 0.9967414429213907, loss: 0.009974818208346264 },
+  { round: 16, acc: 0.9968222335927611, loss: 0.009718962784311606 },
+  { round: 17, acc: 0.9968760940403415, loss: 0.00960611427785524 },
+  { round: 18, acc: 0.9968222335927611, loss: 0.009559729007173582 },
+  { round: 19, acc: 0.9968222335927611, loss: 0.00951109963437407 },
+  { round: 20, acc: 0.9970376753830824, loss: 0.009321272528835583 },
+  { round: 21, acc: 0.9971992567258234, loss: 0.009152514204931357 },
+  { round: 22, acc: 0.9971184660544529, loss: 0.009072994533151255 },
+  { round: 23, acc: 0.9970915358306628, loss: 0.008911596324606301 },
+  { round: 24, acc: 0.9970376753830824, loss: 0.008746511687844717 },
+  { round: 25, acc: 0.9970107451592922, loss: 0.00866326576700031 },
+  { round: 26, acc: 0.9970107451592922, loss: 0.008573218296587143 },
+  { round: 27, acc: 0.9970107451592922, loss: 0.008513513648668342 },
+  { round: 28, acc: 0.9970107451592922, loss: 0.008474768787623032 },
+  { round: 29, acc: 0.9970376753830824, loss: 0.008352270899529371 },
+  { round: 30, acc: 0.9970915358306628, loss: 0.008314746048807126 },
+  { round: 31, acc: 0.9971184660544529, loss: 0.00821959309520715 },
+  { round: 32, acc: 0.9970915358306628, loss: 0.00814441267334724 },
+  { round: 33, acc: 0.9971453962782431, loss: 0.008016721463414173 },
+  { round: 34, acc: 0.9971453962782431, loss: 0.007963473149969902 },
+  { round: 35, acc: 0.9971992567258234, loss: 0.007898797687190382 },
+  { round: 36, acc: 0.9971992567258234, loss: 0.007889037341140746 },
+  { round: 37, acc: 0.9972261869496135, loss: 0.00783205871936376 },
+  { round: 38, acc: 0.9971723265020332, loss: 0.007789214149561674 },
+  { round: 39, acc: 0.9972531171734037, loss: 0.007617987234268182 },
+  { round: 40, acc: 0.9972800473971939, loss: 0.007551733774383461 },
+  { round: 41, acc: 0.9972261869496135, loss: 0.0074732780106923575 },
+  { round: 42, acc: 0.9971992567258234, loss: 0.007325625809506598 },
+  { round: 43, acc: 0.9974146985161446, loss: 0.007314856406098301 },
+  { round: 44, acc: 0.9974146985161446, loss: 0.007286334564634467 },
+  { round: 45, acc: 0.9973608380685643, loss: 0.00716894485979971 },
+  { round: 46, acc: 0.9973877682923545, loss: 0.007136515306703132 },
+  { round: 47, acc: 0.9973339078447742, loss: 0.007120428711854793 },
+  { round: 48, acc: 0.9972531171734037, loss: 0.00708972289568728 },
+  { round: 49, acc: 0.9973069776209841, loss: 0.0070425831814377535 },
+  { round: 50, acc: 0.9973069776209841, loss: 0.007054379907721867 },
+  { round: 51, acc: 0.9973339078447742, loss: 0.006976327719585212 },
+  { round: 52, acc: 0.9974416287399348, loss: 0.006973078037421057 },
+  { round: 53, acc: 0.9974146985161446, loss: 0.006868434865095653 },
+  { round: 54, acc: 0.9973877682923545, loss: 0.006786088799110184 },
+  { round: 55, acc: 0.9974146985161446, loss: 0.006735642237574424 },
+  { round: 56, acc: 0.9974416287399348, loss: 0.0066431910825582455 },
+  { round: 57, acc: 0.9974416287399348, loss: 0.00663691949725512 },
+  { round: 58, acc: 0.9974954891875152, loss: 0.006563188456891426 },
+  { round: 59, acc: 0.9974954891875152, loss: 0.0065659178115441775 },
+  { round: 60, acc: 0.9974954891875152, loss: 0.006438508465487902 }
+);
+contributionRanking.splice(0, contributionRanking.length,
+  { node_code: 'NSL-FIN-01', node_name: '省级清算检测节点', contribution: 0.31, status: 'online' },
+  { node_code: 'NSL-BANK-03', node_name: '商行交易风控节点', contribution: 0.26, status: 'online' },
+  { node_code: 'NSL-BANK-07', node_name: '城商行异常流量节点', contribution: 0.18, status: 'online' },
+  { node_code: 'NSL-CREDIT-02', node_name: '征信行为检测节点', contribution: 0.14, status: 'warning' },
+  { node_code: 'NSL-EDGE-05', node_name: '边缘日志观测节点', contribution: 0.07, status: 'online' },
+  { node_code: 'NSL-AUDIT-04', node_name: '审计样本回放节点', contribution: 0.04, status: 'warning' }
+);
+function pct(v) { return (v * 100).toFixed(2); }
+function syncRange(type) {
+  if (type === 'global') {
+    const v = document.getElementById('globalRange').value / 100;
+    document.getElementById('globalValue').textContent = v.toFixed(2);
+    document.getElementById('globalFeedback').textContent = v > 0.7 ? '偏向全局泛化，适合联盟整体检测率下滑时使用。' : v < 0.35 ? '偏向本地个性化，适合机构差异较大时使用。' : '当前为平衡策略：兼顾联盟泛化与机构个性化。';
+  }
+  if (type === 'join') {
+    const v = document.getElementById('joinRange').value / 100;
+    document.getElementById('joinValue').textContent = v.toFixed(2);
+    document.getElementById('joinFeedback').textContent = '每轮约 ' + Math.max(1, Math.round(v * 24)) + '/24 节点参与，通信成本随比例上升。';
+  }
+  if (type === 'threshold') {
+    const v = document.getElementById('thresholdRange').value / 10;
+    document.getElementById('thresholdValue').textContent = v.toFixed(1) + 'σ';
+    document.getElementById('thresholdFeedback').textContent = v < 2.5 ? '更敏感，适合快速发现异常但可能增加误报。' : v > 3.8 ? '更宽松，适合降低误报但可能延迟发现异常。' : '当前阈值适中，误报与漏报风险平衡。';
+  }
 }
-function toast(msg){ const t=document.getElementById('toast'); t.innerHTML='<i class="fas fa-check-circle"></i> '+msg; t.className='toast show toast-success'; setTimeout(()=>t.className='toast',2400); }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = '<i class="fas fa-check-circle"></i> ' + msg;
+  t.className = 'toast show toast-success';
+  setTimeout(() => t.className = 'toast', 2400);
+}
+function renderSummary() {
+  const last = trainingSeries[trainingSeries.length - 1];
+  const prev = trainingSeries[trainingSeries.length - 2];
+  const peak = trainingSeries.reduce((max, item) => item.acc > max.acc ? item : max, trainingSeries[0]);
+  document.getElementById('statRound').innerHTML = `${last.round}<span class="stat-unit">/${trainingSource.totalRound}</span>`;
+  document.getElementById('statRoundLabel').textContent = '平均轮次间隔 1 · 预计已完成';
+  document.getElementById('statAcc').textContent = pct(last.acc);
+  document.getElementById('statAccTrend').textContent = `${((last.acc - prev.acc) * 100).toFixed(1)}pp vs 上轮`;
+  document.getElementById('statAlphaState').textContent = last.acc >= 0.45 ? '全局泛化' : '本地收敛';
+  document.getElementById('statAlphaLabel').textContent = `best ${pct(peak.acc)}% · last5 avg ${pct(trainingSeries.slice(-5).reduce((s, item) => s + item.acc, 0) / 5)}%`;
+  document.getElementById('statEfficiency').textContent = Math.max(80, Math.round((last.acc / last.loss) * 10));
+  document.getElementById('statEfficiencyLabel').textContent = `loss ${last.loss.toFixed(3)} · peak round ${peak.round}`;
+  document.getElementById('trendLegend').innerHTML = `<span><i class="legend-dot" style="background:#2563eb"></i>全局检测率</span><span><i class="legend-dot" style="background:#10b981"></i>训练损失（归一化）</span><span>第 ${last.round} 轮：${pct(last.acc)}%</span>`;
+  document.getElementById('trendBadge').textContent = `${trainingSource.dataset} · ${trainingSource.goal}`;
+  document.getElementById('contributionTable').innerHTML = contributionRanking.map(item => {
+    const pctWidth = Math.max(0, Math.min(100, item.contribution * 100));
+    return `<tr><td><span class="status-dot ${item.status}"></span>${item.node_name}</td><td><strong>${item.contribution.toFixed(2)}</strong></td><td><div class="meter"><div class="meter-bar ${item.status === 'offline' ? 'bad' : item.status === 'warning' ? 'warn' : 'good'}" style="width:${pctWidth || 2}%"></div></div></td></tr>`;
+  }).join('');
+}
+function applyExperimentSummary() {
+  const last = trainingSeries[trainingSeries.length - 1];
+  const prev = trainingSeries[trainingSeries.length - 2];
+  const peak = trainingSeries.reduce((max, item) => item.acc > max.acc ? item : max, trainingSeries[0]);
+  const last5Avg = trainingSeries.slice(-5).reduce((sum, item) => sum + item.acc, 0) / 5;
+  document.getElementById('statRound').innerHTML = `${last.round}<span class="stat-unit">/${trainingSource.totalRound}</span>`;
+  document.getElementById('statRoundLabel').textContent = `${trainingSource.dataset} / ${trainingSource.goal}`;
+  document.getElementById('statAcc').textContent = pct(last.acc);
+  document.getElementById('statAccTrend').textContent = `${((last.acc - prev.acc) * 100).toFixed(1)}pp vs 上一轮`;
+  document.getElementById('statAlphaState').textContent = `最佳轮次 ${peak.round}`;
+  document.getElementById('statAlphaLabel').textContent = `最后 5 轮均值 ${pct(last5Avg)}%`;
+  document.getElementById('statEfficiency').textContent = last.loss.toFixed(4);
+  document.getElementById('statEfficiencyLabel').textContent = `最终损失 ${last.loss.toFixed(4)}`;
+  document.getElementById('trendLegend').innerHTML = `<span><i class="legend-dot" style="background:#2563eb"></i>检测率</span><span><i class="legend-dot" style="background:#10b981"></i>训练损失</span><span>Round ${last.round} / ${trainingSource.totalRound}</span>`;
+  document.getElementById('trendBadge').textContent = `${trainingSource.dataset} / ${trainingSource.algorithm} / ${trainingSource.goal}`;
+  document.getElementById('contributionTable').innerHTML = '<tr><td colspan="3">实验文件未提供 Fisher 贡献度排行，暂不展示。</td></tr>';
+}
+function renderExperimentSummary() {
+  const last = trainingSeries[trainingSeries.length - 1];
+  const peak = trainingSeries.reduce((max, item) => item.acc > max.acc ? item : max, trainingSeries[0]);
+  const last5Avg = trainingSeries.slice(-5).reduce((sum, item) => sum + item.acc, 0) / 5;
+  const currentRound = last.round + 1;
+  document.getElementById('statRound').innerHTML = `${currentRound}<span class="stat-unit">/${trainingSource.totalRound}</span>`;
+  document.getElementById('statRoundLabel').textContent = `${trainingSource.dataset} / ${trainingSource.algorithm} / ${trainingSource.goal}`;
+  document.getElementById('statAcc').textContent = pct(last.acc);
+  document.getElementById('statAccTrend').textContent = `best ${pct(peak.acc)}% · last5 avg ${pct(last5Avg)}%`;
+  document.getElementById('statAlphaState').textContent = `最佳轮次 ${peak.round}`;
+  document.getElementById('statAlphaLabel').textContent = `最后 5 轮均值 ${pct(last5Avg)}%`;
+  document.getElementById('alphaBar').style.width = `${Math.min(100, Number(pct(last5Avg)))}%`;
+  document.getElementById('statEfficiency').innerHTML = `${last.loss.toFixed(4)}<span class="stat-unit">loss</span>`;
+  document.getElementById('statEfficiencyLabel').textContent = `最终训练损失 ${last.loss.toFixed(4)}`;
+  document.getElementById('trendLegend').innerHTML = `<span><i class="legend-dot" style="background:#2563eb"></i>检测率</span><span><i class="legend-dot" style="background:#10b981"></i>训练损失</span><span>Round ${last.round} / ${trainingSource.totalRound - 1}</span>`;
+  document.getElementById('trendBadge').textContent = `${trainingSource.dataset} / ${trainingSource.algorithm} / ${trainingSource.goal}`;
+  document.getElementById('contributionTable').innerHTML = '<tr><td colspan="3">实验文件未提供 Fisher 贡献度排行，暂无来源数据。</td></tr>';
+}
+function renderMockContributionRanking() {
+  const maxContribution = Math.max(...contributionRanking.map(item => item.contribution));
+  document.getElementById('contributionTable').innerHTML = contributionRanking.map(item => {
+    const width = Math.max(4, Math.round((item.contribution / maxContribution) * 100));
+    const barClass = item.status === 'warning' ? 'warn' : item.status === 'offline' ? 'bad' : 'good';
+    return `<tr><td><span class="status-dot ${item.status}"></span>${item.node_name}</td><td><strong>${item.contribution.toFixed(2)}</strong></td><td><div class="meter"><div class="meter-bar ${barClass}" style="width:${width}%"></div></div></td></tr>`;
+  }).join('');
+}
+function renderSummary() {
+  renderExperimentSummary();
+  renderMockContributionRanking();
+}
+function renderTrend() {
+  const svg = document.getElementById('trainingTrendChart');
+  const width = 760;
+  const height = 220;
+  const pad = 26;
+  const minAcc = Math.min(...trainingSeries.map(item => item.acc));
+  const maxAcc = Math.max(...trainingSeries.map(item => item.acc));
+  const minLoss = Math.min(...trainingSeries.map(item => item.loss));
+  const maxLoss = Math.max(...trainingSeries.map(item => item.loss));
+  const step = (width - pad * 2) / (trainingSeries.length - 1);
+  const accPoints = trainingSeries.map((item, index) => [pad + index * step, height - pad - ((item.acc - minAcc) / (maxAcc - minAcc || 1)) * (height - pad * 2)]);
+  const lossPoints = trainingSeries.map((item, index) => [pad + index * step, height - pad - ((item.loss - minLoss) / (maxLoss - minLoss || 1)) * (height - pad * 2)]);
+  const accLine = accPoints.map(point => point.join(',')).join(' ');
+  const lossLine = lossPoints.map(point => point.join(',')).join(' ');
+  const accArea = `M ${pad},${height - pad} ${accLine} L ${width - pad},${height - pad} Z`;
+  const lossArea = `M ${pad},${height - pad} ${lossLine} L ${width - pad},${height - pad} Z`;
+  svg.innerHTML = `<defs><linearGradient id="coordArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#2563eb" stop-opacity="0.28"/><stop offset="100%" stop-color="#2563eb" stop-opacity="0.02"/></linearGradient><linearGradient id="lossAreaGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.22"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/></linearGradient></defs><path d="${accArea}" fill="url(#coordArea)"/><path d="M ${accLine}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><path d="${lossArea}" fill="url(#lossAreaGrad)"/><path d="M ${lossLine}" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 6"/><g class="trend-grid"><line x1="26" y1="52" x2="734" y2="52"></line><line x1="26" y1="110" x2="734" y2="110"></line><line x1="26" y1="168" x2="734" y2="168"></line></g>${trainingSeries.map((item, index) => `<circle class="trend-point" cx="${accPoints[index][0]}" cy="${accPoints[index][1]}" r="4"><title>Round ${item.round} · acc ${pct(item.acc)}% · loss ${item.loss.toFixed(3)}</title></circle>`).join('')}<g class="trend-axis"><text x="26" y="206">Round 0</text><text x="360" y="206">Round ${Math.round(trainingSeries[trainingSeries.length - 1].round / 2)}</text><text x="704" y="206">Round ${trainingSeries[trainingSeries.length - 1].round}</text></g>`;
+}
+renderExperimentSummary();
+renderMockContributionRanking();
+renderTrend();
+syncRange('global');
+syncRange('join');
+syncRange('threshold');
 </script>
 </body>
 </html>
