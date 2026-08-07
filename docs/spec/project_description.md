@@ -77,14 +77,14 @@ ISAC（Information Sharing and Analysis Center）是美国最成熟的行业威�
 
 ### 2.4 本方案定位与对比
 
-| 对比维度    | 传统 ISAC / MISP | 联邦学习平台 (FATE, Flower) | 商用 SOC / 威胁情报产品  | **本作品（FedPKDA 平台）**     |
-|:------- |:-------------- |:--------------------- |:---------------- |:----------------------- |
-| 数据共享机制  | 共享明文/脱敏后静态 IOC | 传输模型梯度或参数             | 集中上报日志/遥测至云端     | **带噪类原型（原始数据不出域）**      |
-| 隐私与合规   | 人工脱敏，存在合规风险    | 梯度可被逆向还原              | 集中存储，面临《数安法》出境限制 | **严格满足《数安法》《网安法》**      |
-| 情报时效与智能 | 静态规则，时效差       | 批量离线训练，实时性低           | 实时性好，依赖单一厂商      | **实时动态知识转移，高适应能力**      |
-| 异构兼容性   | 依赖统一格式，对接成本高   | 要求网络结构高度一致            | 绑定厂商生态           | **支持异构模型与节点协作**         |
-| 通信与算力开销 | 通信低但缺模型化情报     | 通信频次高、开销大             | 建设成本昂贵           | **轻量化通信开销**             |
-| 机构协作意愿  | 顾虑商业机密，意愿低     | 算法复杂、存在泄露隐患           | 供应商锁定风险          | **"数据不出域、知识可共享"，天然高信任** |
+| 对比维度 | 传统 ISAC / MISP | 联邦学习平台 (FATE, Flower) | 商用 SOC / 威胁情报产品 | **本作品（FedPKDA 平台）** |
+| :------- | :-------------- | :--------------------- | :---------------- | :----------------------- |
+| 数据共享机制 | 共享明文/脱敏后静态 IOC | 传输模型梯度或参数 | 集中上报日志/遥测至云端 | **带噪类原型（原始数据不出域）** |
+| 隐私与合规 | 人工脱敏，存在合规风险 | 梯度可被逆向还原 | 集中存储，面临《数安法》出境限制 | **严格满足《数安法》《网安法》** |
+| 情报时效与智能 | 静态规则，时效差 | 批量离线训练，实时性低 | 实时性好，依赖单一厂商 | **实时动态知识转移，高适应能力** |
+| 异构兼容性 | 依赖统一格式，对接成本高 | 要求网络结构高度一致 | 绑定厂商生态 | **支持异构模型与节点协作** |
+| 通信与算力开销 | 通信低但缺模型化情报 | 通信频次高、开销大 | 建设成本昂贵 | **轻量化通信开销** |
+| 机构协作意愿 | 顾虑商业机密，意愿低 | 算法复杂、存在泄露隐患 | 供应商锁定风险 | **"数据不出域、知识可共享"，天然高信任** |
 
 ---
 
@@ -94,14 +94,14 @@ ISAC（Information Sharing and Analysis Center）是美国最成熟的行业威�
 
 传统 ISAC 共享机制依赖法律协议和控制制度保护数据安全——**信任基于"你是谁"**。本作品通过算法本身剥夺数据被滥用的可能性——**信任基于"你技术上做不了坏事"**：
 
-| 维度      | ISAC 模式     | FedPKDA 模式              |
+| 维度 | ISAC 模式 | FedPKDA 模式 |
 | ------- | ----------- | ----------------------- |
-| 传输内容    | 原始/脱敏事件数据   | 裁剪+噪声原型（PSNR 6.9，数学不可逆） |
-| 协调员能看什么 | 所有共享数据      | 仅聚合统计指标                 |
-| 信任基础    | 法律协议 + 身份认证 | 算法保证"做不了坏事"             |
-| 异常检测    | 人工举报/主动披露   | 马氏距离自动计算                |
-| 贡献度量    | 无法精确量化      | Fisher 信息矩阵天然量化         |
-| 共享决策    | 分析员人工判断     | 算法自动加噪上传                |
+| 传输内容 | 原始/脱敏事件数据 | 裁剪+噪声原型（PSNR 6.9，数学不可逆） |
+| 协调员能看什么 | 所有共享数据 | 仅聚合统计指标 |
+| 信任基础 | 法律协议 + 身份认证 | 算法保证"做不了坏事" |
+| 异常检测 | 人工举报/主动披露 | 马氏距离自动计算 |
+| 贡献度量 | 无法精确量化 | Fisher 信息矩阵天然量化 |
+| 共享决策 | 分析员人工判断 | 算法自动加噪上传 |
 
 ### 3.2 四大技术手段
 
@@ -221,12 +221,12 @@ ISAC（Information Sharing and Analysis Center）是美国最成熟的行业威�
 
 ### 5.2 异构数据场景：检测率大幅领先
 
-| 数据集        | 算法                | 最佳精度       | 差距           |
+| 数据集 | 算法 | 最佳精度 | 差距 |
 | ---------- | ----------------- | ---------- | ------------ |
-| Cifar100   | FedAvg (CNN)      | 27.87%     | —            |
-| Cifar100   | **FedPKDA (CNN)** | **45.29%** | **+17.42pp** |
-| Flowers102 | FedAvg (CNN)      | 30.15%     | —            |
-| Flowers102 | **FedPKDA (CNN)** | **36.65%** | **+6.50pp**  |
+| Cifar100 | FedAvg (CNN) | 27.87% | — |
+| Cifar100 | **FedPKDA (CNN)** | **45.29%** | **+17.42pp** |
+| Flowers102 | FedAvg (CNN) | 30.15% | — |
+| Flowers102 | **FedPKDA (CNN)** | **36.65%** | **+6.50pp** |
 
 ![Cifar100 精度曲线](../report/experiment/fig_Cifar100_accuracy.png)
 
@@ -242,11 +242,11 @@ ISAC（Information Sharing and Analysis Center）是美国最成熟的行业威�
 
 > 该*稳定性*是**论文未提及、由本作品实测发现**的独特优势，是本作品在安全场景落地的最大论据。
 
-| 配置          | FedAvg best→final               | FedPKDA best→final     | 收敛后波动 (last 10 轮 std) |
+| 配置 | FedAvg best→final | FedPKDA best→final | 收敛后波动 (last 10 轮 std) |
 | ----------- | ------------------------------- | ---------------------- | --------------------- |
-| 基准          | 99.35% → 96.64%（-2.7pp）         | 99.68% → 99.68%（±0）    | 1.76 vs **0.00**      |
-| 稀疏参与 jr=0.1 | 94.09% → 53.39%（**崩塌 -40.7pp**） | 99.67% → 99.66%（±0.01） | 15.68 vs **0.00**     |
-| 稀疏参与 jr=0.2 | 93.72% → 55.02%（**崩塌 -38.7pp**） | 99.68% → 99.67%（±0.02） | 13.57 vs **0.00**     |
+| 基准 | 99.35% → 96.64%（-2.7pp） | 99.68% → 99.68%（±0） | 1.76 vs **0.00** |
+| 稀疏参与 jr=0.1 | 94.09% → 53.39%（**崩塌 -40.7pp**） | 99.67% → 99.66%（±0.01） | 15.68 vs **0.00** |
+| 稀疏参与 jr=0.2 | 93.72% → 55.02%（**崩塌 -38.7pp**） | 99.68% → 99.67%（±0.02） | 13.57 vs **0.00** |
 
 ![NSL-KDD 精度曲线](../report/experiment/fig_NSLKDD_accuracy.png)
 
@@ -306,31 +306,79 @@ FedPKDA 在异构数据场景下显著提升检测精度（+6.5~17.4pp），在�
 上行链路：本地数据 → 特征提取器 → 裁剪 [-1,1] + Laplace 噪声 → 上传带噪原型；
 下行链路：K-Means + 马氏距离加权生成全局原型 → 广播；Fisher 加权聚合全局模型 → 下发。
 
+```mermaid
+---
+title: FedPKDA System
+---
+graph TB
+    %% 浅色卡片样式（圆角 + 细边框）
+    classDef module fill:#DBEAFE,stroke:#3B82F6,stroke-width:1.5px,color:#1E40AF,rx:8px,ry:8px,font-size:14px;
+    classDef client fill:#ECFDF5,stroke:#10B981,stroke-width:1.5px,color:#065F46,rx:8px,ry:8px,font-size:14px;
+    classDef data fill:#FFFBEB,stroke:#F59E0B,stroke-width:1.5px,color:#92400E,rx:8px,ry:8px,font-size:14px;
+
+    style Proto_Engine fill:#F8FAFC,stroke:#E2E8F0,stroke-width:1px;
+    style Client_A fill:#F8FAFC,stroke:#E2E8F0,stroke-width:1px;
+    style Model_Engine fill:#F8FAFC,stroke:#E2E8F0,stroke-width:1px;
+
+    subgraph Proto_Engine [原型聚合引擎]
+        direction LR
+        receive@{ shape: rect, label: "接受带噪原型"} --> culster@{ shape: rect, label: "K-Means聚类" }
+        culster --> ma_distance@{ shape:rect, label: "马氏距离加权<br/>异常节点自动降权" }
+        ma_distance --> global_generation@{ shape: rect, label: "生成全局原型"}
+    end
+
+    subgraph Client_A [客户端 A]
+        direction LR
+        local_db_A@{shape: cyl, label: "本地数据"} -->|特征提取|prototype_A@{shape: docs, label: "本地初始原型"}
+        prototype_A --> |裁剪,加噪|cliped_prototype_A@{ shape: procs, label: "本地原型"}
+    end
+
+    subgraph Model_Engine [模型聚合引擎]
+        direction LR
+        M1[收集本地模型参数] --> M2[Fisher 信息矩阵加权] --> M3[生成全局模型]
+    end
+
+    Client_A --> |上行 本地带噪类原型| Proto_Engine
+    Proto_Engine --> |全局原型|Client_A
+    Client_A --> Model_Engine
+    Model_Engine --> |下行 全局模型|Client_A
+
+    %% 应用样式
+    class receive,culster,ma_distance,global_generation module;
+    class local_db_A data;
+    class prototype_A,cliped_prototype_A client;
+    class M1,M2,M3 module;
 ```
-                   协调服务器（Coordinator）
-   ┌─────────────────────────────────────────────────────┐
-   │ ① 收集各客户端的带噪原型                               │
-   │ ② K-Means 聚类 → 马氏距离加权（异常自动降权）            │
-   │ ③ 生成全局原型 → 广播回客户端                           │
-   │ ④ Fisher 加权聚合全局模型 → 下发                       │
-   └──────────────┬──────────────────────────┬───────────┘
-                  ↕ 上行：带噪原型           ↕ 下行：全局原型 + 模型
-   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐
-   │ 机构 A   │   │ 机构 B  │   │ 机构 C   │   │  ...    │
-   │ 金融流量  │   │ 政务流量 │   │ 能源流量 │   │  其他    │
-   ├─────────┤   ├─────────┤   ├─────────┤   ├─────────┤
-   │ 本地训练 │   │ 本地训练  │   │ 本地训练 │   │         │
-   │ 原型+噪声│   │ 原型+噪声 │   │ 原型+噪声│   │         │
-   └─────────┘   └─────────┘   └─────────┘   └─────────┘
-        原始数据仅存在于机构本地，协调员从技术上拿不到原型与数据
+
+```mermaid
+graph LR
+    %% 浅色卡片样式（圆角 + 细边框）
+    classDef server fill:#EFF6FF,stroke:#2563EB,stroke-width:1.5px,color:#1E3A8A,rx:8px,ry:8px,font-size:14px;
+    classDef module fill:#DBEAFE,stroke:#3B82F6,stroke-width:1.5px,color:#1E40AF,rx:8px,ry:8px,font-size:14px;
+    classDef client fill:#ECFDF5,stroke:#10B981,stroke-width:1.5px,color:#065F46,rx:8px,ry:8px,font-size:14px;
+
+    style Coordinator fill:#F8FAFC,stroke:#E2E8F0,stroke-width:1px;
+
+    subgraph Coordinator [协调服务端]
+        direction TB
+        Model_Engine@{label: "模型聚合引擎"} ~~~ Proto_Engine@{label: "原型聚合引擎"} ~~~ Panel@{label: "协调员面板"}
+    end
+
+    Client_A[客户端A] & Client_B[客户端B] & Client_C[客户端C] --> Coordinator
+    Coordinator --> Client_A & Client_B & Client_C
+
+    %% 应用样式
+    class Coordinator server;
+    class Model_Engine,Proto_Engine,Panel module;
+    class Client_A,Client_B,Client_C client;
 ```
 
 ### 6.2 角色与权力边界
 
-|           | 能看到什么       | 能做什么            | 不能做什么           |
+| | 能看到什么 | 能做什么 | 不能做什么 |
 | --------- | ----------- | --------------- | --------------- |
 | **联盟协调员** | 聚合统计 + 脱敏事件 | 建议隔离、广播通知、调全局参数 | 不能看原始数据、原型、攻击事件 |
-| **机构运营员** | 自己的完整信息     | 隔离/恢复节点、调本地参数   | 不能看其他机构任何信息     |
+| **机构运营员** | 自己的完整信息 | 隔离/恢复节点、调本地参数 | 不能看其他机构任何信息 |
 
 **关键设计**：协调员"建议隔离"≠ 强制隔离——隔离执行权在机构侧，这是分权设计的核心；协调员从技术上拿不到原型与数据（架构保证，非权限配置）。
 
@@ -351,39 +399,39 @@ FedPKDA 在异构数据场景下显著提升检测精度（+6.5~17.4pp），在�
 
 **平台概览（`/overall`，3 个）**
 
-| 方法  | 路径                  | 用途                  |
+| 方法 | 路径 | 用途 |
 | --- | ------------------- | ------------------- |
 | GET | `/overall/best_acc` | 最佳检测率及 vs FedAvg 提升 |
-| GET | `/overall/node_num` | 参与机构数及新增            |
-| GET | `/overall/round`    | 当前训练轮次              |
+| GET | `/overall/node_num` | 参与机构数及新增 |
+| GET | `/overall/round` | 当前训练轮次 |
 
 **协调员端（`/coordinator`，11 个）**
 
-| 方法   | 路径                                   | 用途              |
+| 方法 | 路径 | 用途 |
 | ---- | ------------------------------------ | --------------- |
-| GET  | `/coordinator/event/all_event`       | 事件列表（过滤 + 分页）   |
-| GET  | `/coordinator/event/summary`         | 事件统计概览（分布 + 趋势） |
-| POST | `/coordinator/event/{id}/handle`     | 处理事件（关注 / 完成）   |
-| POST | `/coordinator/event/broadcast`       | 广播通知            |
-| GET  | `/coordinator/node/list`             | 节点列表 + 健康概览     |
-| GET  | `/coordinator/node/{id}`             | 节点详情            |
-| POST | `/coordinator/node/{id}/notify`      | 向节点发送通知         |
-| GET  | `/coordinator/training/status`       | 训练状态 + 趋势       |
-| GET  | `/coordinator/training/params`       | 读取全局参数          |
-| POST | `/coordinator/training/params`       | 更新全局参数          |
-| GET  | `/coordinator/training/contribution` | Fisher 贡献度排行    |
+| GET | `/coordinator/event/all_event` | 事件列表（过滤 + 分页） |
+| GET | `/coordinator/event/summary` | 事件统计概览（分布 + 趋势） |
+| POST | `/coordinator/event/{id}/handle` | 处理事件（关注 / 完成） |
+| POST | `/coordinator/event/broadcast` | 广播通知 |
+| GET | `/coordinator/node/list` | 节点列表 + 健康概览 |
+| GET | `/coordinator/node/{id}` | 节点详情 |
+| POST | `/coordinator/node/{id}/notify` | 向节点发送通知 |
+| GET | `/coordinator/training/status` | 训练状态 + 趋势 |
+| GET | `/coordinator/training/params` | 读取全局参数 |
+| POST | `/coordinator/training/params` | 更新全局参数 |
+| GET | `/coordinator/training/contribution` | Fisher 贡献度排行 |
 
 **运营员端（`/operator`，7 个）**
 
-| 方法   | 路径                          | 用途               |
+| 方法 | 路径 | 用途 |
 | ---- | --------------------------- | ---------------- |
-| GET  | `/operator/node/status`     | 本节点状态总览          |
-| GET  | `/operator/params`          | 读取本地参数（两页共用）     |
-| POST | `/operator/params`          | 保存本地参数           |
-| POST | `/operator/node/isolate`    | 隔离本节点            |
-| POST | `/operator/node/recover`    | 恢复参与             |
-| GET  | `/operator/training/status` | 本地训练状态 + 本地/全局对比 |
-| POST | `/operator/training/watch`  | 标记观察             |
+| GET | `/operator/node/status` | 本节点状态总览 |
+| GET | `/operator/params` | 读取本地参数（两页共用） |
+| POST | `/operator/params` | 保存本地参数 |
+| POST | `/operator/node/isolate` | 隔离本节点 |
+| POST | `/operator/node/recover` | 恢复参与 |
+| GET | `/operator/training/status` | 本地训练状态 + 本地/全局对比 |
+| POST | `/operator/training/watch` | 标记观察 |
 
 通用约定：统一 `time` 时间戳、Bearer token 鉴权（角色权限隔离）、统一错误结构（`{time, code, message}`）、轮询刷新（5-10s）。
 
@@ -505,8 +553,6 @@ dashboard 场景 5-10 秒刷新粒度足够；轮询部署简单、无长连接�
 10. Zhu et al., *Deep Leakage from Gradients*, NeurIPS 2019
 11. Dwork et al., *Calibrating Noise to Sensitivity in Private Data Analysis*（差分隐私基础）, TCC 2006
 
-
-
 ```mermaid
 graph TB
     %% 定义样式
@@ -532,14 +578,14 @@ graph TB
         direction LR
         C1[机构 A<br>金融/银行流量]
         C2[机构 B<br>政务云流量]
-        C3[机构 C<br>能源/电力流量]
+
         C4[机构 ...<br>更多联盟成员]
     end
 
     %% 数据流连接
     C1 -- "⬆ 上行：带噪类原型" --> Coordinator
     C2 -- "⬆ 上行：带噪类原型" --> Coordinator
-    C3 -- "⬆ 上行：带噪类原型" --> Coordinator
+  
     C4 -- "⬆ 上行：带噪类原型" --> Coordinator
 
     Coordinator -- "⬇ 下行：全局原型 + 全局模型" --> C1
@@ -550,17 +596,17 @@ graph TB
     %% 标注节点内部细节（通过CSS或隐藏备注）
     C1 --- D1[🔒 原始流量数据]
     C2 --- D2[🔒 原始流量数据]
-    C3 --- D3[🔒 原始流量数据]
+  
     C4 --- D4[🔒 原始流量数据]
     
     D1 -.-> L1[裁剪+Laplace噪声]
     D2 -.-> L2[裁剪+Laplace噪声]
-    D3 -.-> L3[裁剪+Laplace噪声]
+
     D4 -.-> L4[裁剪+Laplace噪声]
 
     %% 应用样式
     class Coordinator server;
     class Proto_Engine,Model_Engine module;
-    class C1,C2,C3,C4 client;
+    class C1,C2,C4 client;
     class D1,D2,D3,D4 data;
 ```
