@@ -21,43 +21,34 @@
 <main class="main">
   <div class="page-header">
     <div><h1><i class="fas fa-microchip"></i>训练控制</h1><div class="sub">本机构训练状态、本地参数与全局结果对比 · 调整仅影响本节点</div></div>
-    <span class="badge badge-green"><i class="fas fa-building"></i>省农商行清算中心</span>
+    <span class="badge badge-green"><i class="fas fa-building"></i>机构运营员只能调本地参数</span>
   </div>
 
   <div class="status-bar">
     <div><span class="status-dot online"></span><strong>本地训练正常</strong><span class="status-note"><i class="fas fa-lock"></i> 原始数据留存在机构内</span></div>
-    <div class="small-meta">同步版本 v38 · 下一轮预计 14:38 开始</div>
+    <div class="small-meta">同步版本 v60 · 下一轮预计 14:38 开始</div>
   </div>
 
   <div class="grid-4">
-    <div class="card stat-card accent-blue"><div class="card-h"><i class="fas fa-layer-group"></i>全局轮次</div><div class="stat-number">38<span class="stat-unit">/40</span></div><div class="stat-label">剩余约 8 分钟</div></div>
-    <div class="card stat-card accent-success"><div class="card-h"><i class="fas fa-bullseye"></i>本地检测率</div><div class="stat-number">94.2<span class="stat-unit">%</span></div><div class="stat-label trend-up"><i class="fas fa-arrow-up"></i> +0.4pp vs 7轮均值</div></div>
-    <div class="card stat-card"><div class="card-h"><i class="fas fa-weight-hanging"></i>贡献排名</div><div class="stat-number">1<span class="stat-unit">/24</span></div><div class="stat-label">Fisher 权重 0.31</div></div>
-    <div class="card stat-card"><div class="card-h"><i class="fas fa-shield-virus"></i>隐私预算</div><div class="stat-number">42<span class="stat-unit">%</span></div><div class="stat-label trend-up">ε=2.4 · 安全</div></div>
+    <div class="card stat-card accent-blue"><div class="card-h"><i class="fas fa-layer-group"></i>全局轮次</div><div class="stat-number" id="statRound">--<span class="stat-unit">/--</span></div><div class="stat-label" id="statRoundLabel">--</div></div>
+    <div class="card stat-card accent-success"><div class="card-h"><i class="fas fa-bullseye"></i>本地检测率</div><div class="stat-number" id="statAcc">--<span class="stat-unit">%</span></div><div class="stat-label trend-up" id="statAccTrend">--</div></div>
+    <div class="card stat-card"><div class="card-h"><i class="fas fa-weight-hanging"></i>贡献排名</div><div class="stat-number">1<span class="stat-unit">/24</span></div><div class="stat-label" id="statContributionLabel">Fisher 权重 0.31</div></div>
+    <div class="card stat-card"><div class="card-h"><i class="fas fa-shield-virus"></i>隐私预算</div><div class="stat-number" id="statPrivacy">--<span class="stat-unit">%</span></div><div class="stat-label trend-up" id="statPrivacyLabel">--</div></div>
   </div>
 
   <div class="grid-2">
     <section class="card line-chart-card">
-      <div class="card-h card-h-split"><span><i class="fas fa-chart-line"></i>本地与全局趋势</span><span class="badge badge-green">本地稳定领先</span></div>
-      <svg class="area-chart" viewBox="0 0 760 220" preserveAspectRatio="none" aria-label="本地与全局检测率趋势图">
-        <defs>
-          <linearGradient id="localArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.24"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/></linearGradient>
-          <linearGradient id="globalArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#2563eb" stop-opacity="0.14"/><stop offset="100%" stop-color="#2563eb" stop-opacity="0.01"/></linearGradient>
-        </defs>
-        <path d="M0,190 L40,174 L80,158 L120,138 L160,121 L200,108 L240,96 L280,86 L320,78 L360,70 L400,64 L440,58 L480,52 L520,48 L560,44 L600,40 L640,36 L680,34 L720,38 L760,44 L760,220 L0,220 Z" fill="url(#localArea)"/>
-        <path d="M0,190 L40,174 L80,158 L120,138 L160,121 L200,108 L240,96 L280,86 L320,78 L360,70 L400,64 L440,58 L480,52 L520,48 L560,44 L600,40 L640,36 L680,34 L720,38 L760,44" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>
-        <path d="M0,210 L40,205 L80,198 L120,190 L160,181 L200,172 L240,164 L280,154 L320,145 L360,136 L400,128 L440,120 L480,112 L520,104 L560,96 L600,88 L640,82 L680,78 L720,72 L760,66 L760,220 L0,220 Z" fill="url(#globalArea)"/>
-        <path d="M0,210 L40,205 L80,198 L120,190 L160,181 L200,172 L240,164 L280,154 L320,145 L360,136 L400,128 L440,120 L480,112 L520,104 L560,96 L600,88 L640,82 L680,78 L720,72 L760,66" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 7"/>
-      </svg>
-      <div class="chart-legend"><span><i class="legend-dot" style="background:#10b981"></i>本地检测率 94.2%</span><span><i class="legend-dot" style="background:#2563eb"></i>全局检测率 45.1%</span><span>历史峰值：95.8%</span></div>
+      <div class="card-h card-h-split"><span><i class="fas fa-chart-line"></i>本地与全局趋势</span><span class="badge badge-green" id="trendBadge">FedPKDA</span></div>
+      <svg id="trainingTrendChart" class="area-chart" viewBox="0 0 760 220" preserveAspectRatio="none" aria-label="本地与全局检测率趋势图"></svg>
+      <div class="chart-legend" id="trendLegend"></div>
     </section>
 
     <section class="card">
       <div class="card-h"><i class="fas fa-sliders-h"></i>本地参数控制</div>
       <div class="control-stack">
-        <div class="control-item"><div class="control-head"><strong>Noise Injection</strong><span class="control-value" id="noiseValue">0.05</span></div><input id="noiseRange" type="range" min="0" max="20" value="5" style="width:100%;" oninput="syncLocalControl('noise')" /><div class="control-feedback" id="noiseFeedback">隐私保护处于温和档位，对检测率影响较小。</div></div>
-        <div class="control-item"><div class="control-head"><strong>Local Epochs</strong><span class="control-value" id="epochValue">5</span></div><input id="epochRange" type="range" min="1" max="20" value="5" style="width:100%;" oninput="syncLocalControl('epoch')" /><div class="control-feedback" id="epochFeedback">当前训练强度适中，适合稳定参与聚合。</div></div>
-        <div class="control-item"><div class="control-head"><strong>Participation Mode</strong><span class="control-value" id="modeValue">训练+评估</span></div><select id="modeSelect" class="form-select" onchange="syncLocalControl('mode')"><option>训练+评估</option><option>仅训练</option><option>仅评估</option><option>空闲</option></select><div class="control-feedback" id="modeFeedback">本节点将提交训练更新并返回评估结果。</div></div>
+        <div class="control-item"><div class="control-head"><strong>噪声注入强度</strong><span class="control-value" id="noiseValue">0.05</span></div><input id="noiseRange" type="range" min="0" max="20" value="5" style="width:100%;" oninput="syncLocalControl('noise')" /><div class="control-feedback" id="noiseFeedback">隐私保护处于温和档位，对检测率影响较小。</div></div>
+        <div class="control-item"><div class="control-head"><strong>本地轮次</strong><span class="control-value" id="epochValue">5</span></div><input id="epochRange" type="range" min="1" max="20" value="5" style="width:100%;" oninput="syncLocalControl('epoch')" /><div class="control-feedback" id="epochFeedback">当前训练强度适中，适合稳定参与聚合。</div></div>
+        <div class="control-item"><div class="control-head"><strong>参与模式</strong><span class="control-value" id="modeValue">训练+评估</span></div><select id="modeSelect" class="form-select" onchange="syncLocalControl('mode')"><option>训练+评估</option><option>仅训练</option><option>仅评估</option><option>空闲</option></select><div class="control-feedback" id="modeFeedback">本节点将提交训练更新并返回评估结果。</div></div>
       </div>
       <div class="operation-bar" style="margin-top:16px;"><span class="small-meta">本地参数不会改变联盟全局策略，将在下一轮生效。</span><button class="btn btn-primary" onclick="toast('本地参数已保存，将在下一轮生效')"><i class="fas fa-check"></i>保存本地参数</button></div>
     </section>
@@ -66,23 +57,212 @@
   <div class="grid-2">
     <section class="card status-surface success">
       <div class="card-h card-h-split"><span><i class="fas fa-chart-simple"></i>训练质量摘要</span><span class="tag success">高贡献</span></div>
-      <table class="table"><tr><td class="info-label">本地损失</td><td class="info-value">0.312 <span class="trend-up">· 持续收敛</span></td></tr><tr><td class="info-label">模型版本差</td><td class="info-value">0（已同步）</td></tr><tr><td class="info-label">历史最高检测率</td><td class="info-value">95.8%（第 35 轮）</td></tr><tr><td class="info-label">本轮贡献解释</td><td class="info-value">高质量样本与稳定梯度</td></tr></table>
+      <table class="table">
+        <tr><td class="info-label">本地损失</td><td class="info-value" id="summaryLoss">--</td></tr>
+        <tr><td class="info-label">模型版本差</td><td class="info-value">0（已同步）</td></tr>
+        <tr><td class="info-label">历史最高检测率</td><td class="info-value" id="summaryPeak">--</td></tr>
+        <tr><td class="info-label">本轮贡献说明</td><td class="info-value" id="summaryNote">--</td></tr>
+      </table>
     </section>
     <section class="card status-surface warning">
       <div class="card-h card-h-split"><span><i class="fas fa-triangle-exclamation"></i>风险与建议</span><span class="tag warning">关注</span></div>
-      <div class="callout warning">本地检测率较峰值下降 1.6pp。建议维持当前噪声强度，等待下一轮全局模型回传后再扩大本地轮次。</div>
+      <div class="callout warning" id="riskMessage">--</div>
       <div class="operation-bar" style="margin-top:14px;"><span class="small-meta">建议优先观察 2 轮趋势</span><button class="btn btn-ghost" onclick="toast('已记录观察策略')"><i class="fas fa-bookmark"></i>标记观察</button></div>
     </section>
   </div>
   <div id="toast" class="toast"></div>
 </main>
 <script>
-function syncLocalControl(type){
-  if(type==='noise') { const v=document.getElementById('noiseRange').value/100; document.getElementById('noiseValue').textContent=v.toFixed(2); document.getElementById('noiseFeedback').textContent=v>0.12?'隐私保护更强，可能轻微压低本地检测率。':v<0.03?'隐私保护较弱，建议仅在低风险环境使用。':'隐私保护处于温和档位，对检测率影响较小。'; }
-  if(type==='epoch') { const v=parseInt(document.getElementById('epochRange').value,10); document.getElementById('epochValue').textContent=v; document.getElementById('epochFeedback').textContent=v>12?'训练更充分，但会增加本地耗时和过拟合风险。':v<4?'训练开销较低，但本轮贡献可能下降。':'当前训练强度适中，适合稳定参与聚合。'; }
-  if(type==='mode') { const v=document.getElementById('modeSelect').value; document.getElementById('modeValue').textContent=v; document.getElementById('modeFeedback').textContent=v==='训练+评估'?'本节点将提交训练更新并返回评估结果。':v==='仅训练'?'本节点只提交训练更新，暂不返回评估指标。':v==='仅评估'?'本节点只执行评估，可用于低负载监测。':'本节点暂不参与本轮训练与评估。'; }
+const trainingSource = {
+  dataset: 'NSLKDD',
+  algorithm: 'Fedpkda',
+  goal: 'nslkdd_fedpkda_dnn_lr5e-3',
+  totalRound: 61
+};
+const trainingSeries = [
+  { round: 0, local_acc: 0.4808660759970915, global_acc: 0.4808660759970915, loss: 0.8432298843388316 },
+  { round: 1, local_acc: 0.7843966283359814, global_acc: 0.7843966283359814, loss: 0.38155398390342954 },
+  { round: 2, local_acc: 0.9671451269760052, global_acc: 0.9671451269760052, loss: 0.09800054777978792 },
+  { round: 3, local_acc: 0.97301591576226, global_acc: 0.97301591576226, loss: 0.08086691437916674 },
+  { round: 4, local_acc: 0.9793445183529476, global_acc: 0.9793445183529476, loss: 0.07034891807118054 },
+  { round: 5, local_acc: 0.9793714485767376, global_acc: 0.9793714485767376, loss: 0.06988150599959517 },
+  { round: 6, local_acc: 0.9794522392481082, global_acc: 0.9794522392481082, loss: 0.06904281715537174 },
+  { round: 7, local_acc: 0.9795060996956885, global_acc: 0.9795060996956885, loss: 0.06883176245899968 },
+  { round: 8, local_acc: 0.9795868903670589, global_acc: 0.9795868903670589, loss: 0.06844372093635517 },
+  { round: 9, local_acc: 0.9966875824738104, global_acc: 0.9966875824738104, loss: 0.011439789396702645 },
+  { round: 10, local_acc: 0.9966606522500202, global_acc: 0.9966606522500202, loss: 0.01128000787590828 },
+  { round: 11, local_acc: 0.9967145126976005, global_acc: 0.9967145126976005, loss: 0.011164855175644759 },
+  { round: 12, local_acc: 0.9968491638165513, global_acc: 0.9968491638165513, loss: 0.010535841927874658 },
+  { round: 13, local_acc: 0.9968491638165513, global_acc: 0.9968491638165513, loss: 0.01025919445562045 },
+  { round: 14, local_acc: 0.996795303368971, global_acc: 0.996795303368971, loss: 0.010042458613922922 },
+  { round: 15, local_acc: 0.9967414429213907, global_acc: 0.9967414429213907, loss: 0.009974818208346264 },
+  { round: 16, local_acc: 0.9968222335927611, global_acc: 0.9968222335927611, loss: 0.009718962784311606 },
+  { round: 17, local_acc: 0.9968760940403415, global_acc: 0.9968760940403415, loss: 0.00960611427785524 },
+  { round: 18, local_acc: 0.9968222335927611, global_acc: 0.9968222335927611, loss: 0.009559729007173582 },
+  { round: 19, local_acc: 0.9968222335927611, global_acc: 0.9968222335927611, loss: 0.00951109963437407 },
+  { round: 20, local_acc: 0.9970376753830824, global_acc: 0.9970376753830824, loss: 0.009321272528835583 },
+  { round: 21, local_acc: 0.9971992567258234, global_acc: 0.9971992567258234, loss: 0.009152514204931357 },
+  { round: 22, local_acc: 0.9971184660544529, global_acc: 0.9971184660544529, loss: 0.009072994533151255 },
+  { round: 23, local_acc: 0.9970915358306628, global_acc: 0.9970915358306628, loss: 0.008911596324606301 },
+  { round: 24, local_acc: 0.9970376753830824, global_acc: 0.9970376753830824, loss: 0.008746511687844717 },
+  { round: 25, local_acc: 0.9970107451592922, global_acc: 0.9970107451592922, loss: 0.00866326576700031 },
+  { round: 26, local_acc: 0.9970107451592922, global_acc: 0.9970107451592922, loss: 0.008573218296587143 },
+  { round: 27, local_acc: 0.9970107451592922, global_acc: 0.9970107451592922, loss: 0.008513513648668342 },
+  { round: 28, local_acc: 0.9970107451592922, global_acc: 0.9970107451592922, loss: 0.008474768787623032 },
+  { round: 29, local_acc: 0.9970376753830824, global_acc: 0.9970376753830824, loss: 0.008352270899529371 },
+  { round: 30, local_acc: 0.9970915358306628, global_acc: 0.9970915358306628, loss: 0.008314746048807126 },
+  { round: 31, local_acc: 0.9971184660544529, global_acc: 0.9971184660544529, loss: 0.00821959309520715 },
+  { round: 32, local_acc: 0.9970915358306628, global_acc: 0.9970915358306628, loss: 0.00814441267334724 },
+  { round: 33, local_acc: 0.9971453962782431, global_acc: 0.9971453962782431, loss: 0.008016721463414173 },
+  { round: 34, local_acc: 0.9971453962782431, global_acc: 0.9971453962782431, loss: 0.007963473149969902 },
+  { round: 35, local_acc: 0.9971992567258234, global_acc: 0.9971992567258234, loss: 0.007898797687190382 },
+  { round: 36, local_acc: 0.9971992567258234, global_acc: 0.9971992567258234, loss: 0.007889037341140746 },
+  { round: 37, local_acc: 0.9972261869496135, global_acc: 0.9972261869496135, loss: 0.00783205871936376 },
+  { round: 38, local_acc: 0.9971723265020332, global_acc: 0.9971723265020332, loss: 0.007789214149561674 },
+  { round: 39, local_acc: 0.9972531171734037, global_acc: 0.9972531171734037, loss: 0.007617987234268182 },
+  { round: 40, local_acc: 0.9972800473971939, global_acc: 0.9972800473971939, loss: 0.007551733774383461 },
+  { round: 41, local_acc: 0.9972261869496135, global_acc: 0.9972261869496135, loss: 0.0074732780106923575 },
+  { round: 42, local_acc: 0.9971992567258234, global_acc: 0.9971992567258234, loss: 0.007325625809506598 },
+  { round: 43, local_acc: 0.9974146985161446, global_acc: 0.9974146985161446, loss: 0.007314856406098301 },
+  { round: 44, local_acc: 0.9974146985161446, global_acc: 0.9974146985161446, loss: 0.007286334564634467 },
+  { round: 45, local_acc: 0.9973608380685643, global_acc: 0.9973608380685643, loss: 0.00716894485979971 },
+  { round: 46, local_acc: 0.9973877682923545, global_acc: 0.9973877682923545, loss: 0.007136515306703132 },
+  { round: 47, local_acc: 0.9973339078447742, global_acc: 0.9973339078447742, loss: 0.007120428711854793 },
+  { round: 48, local_acc: 0.9972531171734037, global_acc: 0.9972531171734037, loss: 0.00708972289568728 },
+  { round: 49, local_acc: 0.9973069776209841, global_acc: 0.9973069776209841, loss: 0.0070425831814377535 },
+  { round: 50, local_acc: 0.9973069776209841, global_acc: 0.9973069776209841, loss: 0.007054379907721867 },
+  { round: 51, local_acc: 0.9973339078447742, global_acc: 0.9973339078447742, loss: 0.006976327719585212 },
+  { round: 52, local_acc: 0.9974416287399348, global_acc: 0.9974416287399348, loss: 0.006973078037421057 },
+  { round: 53, local_acc: 0.9974146985161446, global_acc: 0.9974146985161446, loss: 0.006868434865095653 },
+  { round: 54, local_acc: 0.9973877682923545, global_acc: 0.9973877682923545, loss: 0.006786088799110184 },
+  { round: 55, local_acc: 0.9974146985161446, global_acc: 0.9974146985161446, loss: 0.006735642237574424 },
+  { round: 56, local_acc: 0.9974416287399348, global_acc: 0.9974416287399348, loss: 0.0066431910825582455 },
+  { round: 57, local_acc: 0.9974416287399348, global_acc: 0.9974416287399348, loss: 0.00663691949725512 },
+  { round: 58, local_acc: 0.9974954891875152, global_acc: 0.9974954891875152, loss: 0.006563188456891426 },
+  { round: 59, local_acc: 0.9974954891875152, global_acc: 0.9974954891875152, loss: 0.0065659178115441775 },
+  { round: 60, local_acc: 0.9974954891875152, global_acc: 0.9974954891875152, loss: 0.006438508465487902 }
+];
+const contributionRanking = [
+  { node_code: 'NSL-01', node_name: '本地检测节点 A', contribution: 0.31, status: 'online' },
+  { node_code: 'NSL-02', node_name: '本地检测节点 B', contribution: 0.29, status: 'online' },
+  { node_code: 'NSL-03', node_name: '本地检测节点 C', contribution: 0.03, status: 'warning' },
+  { node_code: 'NSL-04', node_name: '本地观察节点', contribution: 0.00, status: 'offline' }
+];
+contributionRanking.splice(0, contributionRanking.length,
+  { node_code: 'NSL-FIN-01', node_name: '省级清算检测节点', contribution: 0.31, status: 'online' },
+  { node_code: 'NSL-BANK-03', node_name: '商行交易风控节点', contribution: 0.26, status: 'online' },
+  { node_code: 'NSL-BANK-07', node_name: '城商行异常流量节点', contribution: 0.18, status: 'online' },
+  { node_code: 'NSL-CREDIT-02', node_name: '征信行为检测节点', contribution: 0.14, status: 'warning' },
+  { node_code: 'NSL-EDGE-05', node_name: '边缘日志观测节点', contribution: 0.07, status: 'online' },
+  { node_code: 'NSL-AUDIT-04', node_name: '审计样本回放节点', contribution: 0.04, status: 'warning' }
+);
+function pct(v) { return (v * 100).toFixed(2); }
+function syncLocalControl(type) {
+  if (type === 'noise') {
+    const v = document.getElementById('noiseRange').value / 100;
+    document.getElementById('noiseValue').textContent = v.toFixed(2);
+    document.getElementById('noiseFeedback').textContent = v > 0.12 ? '隐私保护更强，可能轻微压低本地检测率。' : v < 0.03 ? '隐私保护较弱，建议仅在低风险环境使用。' : '隐私保护处于温和档位，对检测率影响较小。';
+  }
+  if (type === 'epoch') {
+    const v = parseInt(document.getElementById('epochRange').value, 10);
+    document.getElementById('epochValue').textContent = v;
+    document.getElementById('epochFeedback').textContent = v > 12 ? '训练更充分，但会增加本地耗时和过拟合风险。' : v < 4 ? '训练开销较低，但本轮贡献可能下降。' : '当前训练强度适中，适合稳定参与聚合。';
+  }
+  if (type === 'mode') {
+    const v = document.getElementById('modeSelect').value;
+    document.getElementById('modeValue').textContent = v;
+    document.getElementById('modeFeedback').textContent = v === '训练+评估' ? '本节点将提交训练更新并返回评估结果。' : v === '仅训练' ? '本节点只提交训练更新，暂不返回评估指标。' : v === '仅评估' ? '本节点只执行评估，可用于低负载监测。' : '本节点暂不参与本轮训练与评估。';
+  }
 }
-function toast(msg){ const t=document.getElementById('toast'); t.innerHTML='<i class="fas fa-check-circle"></i> '+msg; t.className='toast show toast-success'; setTimeout(()=>t.className='toast',2400); }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = '<i class="fas fa-check-circle"></i> ' + msg;
+  t.className = 'toast show toast-success';
+  setTimeout(() => t.className = 'toast', 2400);
+}
+function renderSummary() {
+  const last = trainingSeries[trainingSeries.length - 1];
+  const prev = trainingSeries[trainingSeries.length - 2];
+  const peak = trainingSeries.reduce((max, item) => item.local_acc > max.local_acc ? item : max, trainingSeries[0]);
+  document.getElementById('statRound').innerHTML = `${last.round}<span class="stat-unit">/${trainingSource.totalRound}</span>`;
+  document.getElementById('statRoundLabel').textContent = `同步版本 v60 · 下一轮预计就绪`;
+  document.getElementById('statAcc').textContent = pct(last.local_acc);
+  document.getElementById('statAccTrend').textContent = `${((last.local_acc - prev.local_acc) * 100).toFixed(1)}pp vs 上轮`;
+  document.getElementById('statContributionLabel').textContent = `Fisher 权重 0.31`;
+  document.getElementById('statPrivacy').textContent = '42';
+  document.getElementById('statPrivacyLabel').textContent = 'ε=2.4 · 安全';
+  document.getElementById('summaryLoss').textContent = last.loss.toFixed(4);
+  document.getElementById('summaryPeak').textContent = `${pct(peak.local_acc)}%（第 ${peak.round} 轮）`;
+  document.getElementById('summaryNote').textContent = '高质量样本与稳定梯度';
+  document.getElementById('riskMessage').textContent = '本地检测率较峰值下降 1.6pp。建议维持当前噪声强度，等待下一轮全局模型回传后再扩大本地轮次。';
+  document.getElementById('trendLegend').innerHTML = `<span><i class="legend-dot" style="background:#10b981"></i>本地检测率 ${pct(last.local_acc)}%</span><span><i class="legend-dot" style="background:#2563eb"></i>全局检测率 ${pct(last.global_acc)}%</span><span>历史峰值：${pct(peak.local_acc)}%</span>`;
+  document.getElementById('trendBadge').textContent = `${trainingSource.dataset} · ${trainingSource.goal}`;
+  document.getElementById('contributionTable').innerHTML = contributionRanking.map(item => {
+    const w = Math.max(0, Math.min(100, item.contribution * 100));
+    return `<tr><td><span class="status-dot ${item.status}"></span>${item.node_name}</td><td><strong>${item.contribution.toFixed(2)}</strong></td><td><div class="meter"><div class="meter-bar ${item.status === 'offline' ? 'bad' : item.status === 'warning' ? 'warn' : 'good'}" style="width:${w || 2}%"></div></div></td></tr>`;
+  }).join('');
+}
+function renderExperimentSummary() {
+  const last = trainingSeries[trainingSeries.length - 1];
+  const peak = trainingSeries.reduce((max, item) => item.local_acc > max.local_acc ? item : max, trainingSeries[0]);
+  const last5Avg = trainingSeries.slice(-5).reduce((sum, item) => sum + item.local_acc, 0) / 5;
+  const currentRound = last.round + 1;
+  document.getElementById('statRound').innerHTML = `${currentRound}<span class="stat-unit">/${trainingSource.totalRound}</span>`;
+  document.getElementById('statRoundLabel').textContent = `${trainingSource.dataset} / ${trainingSource.algorithm} / ${trainingSource.goal}`;
+  document.getElementById('statAcc').textContent = pct(last.local_acc);
+  document.getElementById('statAccTrend').textContent = `best ${pct(peak.local_acc)}% · last5 avg ${pct(last5Avg)}%`;
+  document.getElementById('statContributionLabel').textContent = '实验文件未提供贡献度排行';
+  document.getElementById('statPrivacy').innerHTML = '--<span class="stat-unit"></span>';
+  document.getElementById('statPrivacyLabel').textContent = '实验文件未提供隐私预算';
+  document.getElementById('summaryLoss').textContent = last.loss.toFixed(4);
+  document.getElementById('summaryPeak').textContent = `${pct(peak.local_acc)}%（Round ${peak.round}）`;
+  document.getElementById('summaryNote').textContent = `最后 5 轮均值 ${pct(last5Avg)}%`;
+  document.getElementById('riskMessage').textContent = '实验文件仅提供训练曲线与汇总指标，未提供本地风险事件、隐私预算或 Fisher 贡献度数据。';
+  document.getElementById('trendLegend').innerHTML = `<span><i class="legend-dot" style="background:#10b981"></i>本地检测率 ${pct(last.local_acc)}%</span><span><i class="legend-dot" style="background:#2563eb"></i>全局检测率 ${pct(last.global_acc)}%</span><span>Round ${last.round} / ${trainingSource.totalRound - 1}</span>`;
+  document.getElementById('trendBadge').textContent = `${trainingSource.dataset} / ${trainingSource.algorithm} / ${trainingSource.goal}`;
+}
+function renderMockContributionSummary() {
+  const localContribution = contributionRanking[0];
+  document.getElementById('statContributionLabel').textContent = `Fisher ${localContribution.contribution.toFixed(2)} · 排名 1/24`;
+  document.getElementById('summaryNote').textContent = `${localContribution.node_name}：梯度稳定，异常样本覆盖较高`;
+  document.getElementById('riskMessage').textContent = 'Fisher 贡献度为前端运营模拟数据；隐私预算与本地风险事件仍暂无实验来源。';
+}
+function renderSummary() {
+  renderExperimentSummary();
+  renderMockContributionSummary();
+}
+function renderTrend() {
+  const svg = document.getElementById('trainingTrendChart');
+  const width = 760;
+  const height = 220;
+  const pad = 26;
+  const minLocal = Math.min(...trainingSeries.map(item => item.local_acc));
+  const maxLocal = Math.max(...trainingSeries.map(item => item.local_acc));
+  const minGlobal = Math.min(...trainingSeries.map(item => item.global_acc));
+  const maxGlobal = Math.max(...trainingSeries.map(item => item.global_acc));
+  const step = (width - pad * 2) / (trainingSeries.length - 1);
+  const localPoints = trainingSeries.map((item, index) => {
+    const x = pad + index * step;
+    const y = height - pad - ((item.local_acc - minLocal) / (maxLocal - minLocal || 1)) * (height - pad * 2);
+    return [x, y];
+  });
+  const globalPoints = trainingSeries.map((item, index) => {
+    const x = pad + index * step;
+    const y = height - pad - ((item.global_acc - minGlobal) / (maxGlobal - minGlobal || 1)) * (height - pad * 2);
+    return [x, y];
+  });
+  const localLine = localPoints.map(point => point.join(',')).join(' ');
+  const globalLine = globalPoints.map(point => point.join(',')).join(' ');
+  const localArea = `M ${pad},${height - pad} ${localLine} L ${width - pad},${height - pad} Z`;
+  const globalArea = `M ${pad},${height - pad} ${globalLine} L ${width - pad},${height - pad} Z`;
+  svg.innerHTML = `<defs><linearGradient id="localArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.24"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/></linearGradient><linearGradient id="globalArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#2563eb" stop-opacity="0.14"/><stop offset="100%" stop-color="#2563eb" stop-opacity="0.01"/></linearGradient></defs><path d="${localArea}" fill="url(#localArea)"/><path d="M ${localLine}" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round"/><path d="${globalArea}" fill="url(#globalArea)"/><path d="M ${globalLine}" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 7"/><g class="trend-grid"><line x1="26" y1="52" x2="734" y2="52"></line><line x1="26" y1="110" x2="734" y2="110"></line><line x1="26" y1="168" x2="734" y2="168"></line></g>${trainingSeries.map((item, index) => `<circle class="trend-point" cx="${localPoints[index][0]}" cy="${localPoints[index][1]}" r="4"><title>Round ${item.round} · 本地 ${pct(item.local_acc)}% · 全局 ${pct(item.global_acc)}% · loss ${item.loss.toFixed(3)}</title></circle>`).join('')}<g class="trend-axis"><text x="26" y="206">Round 0</text><text x="360" y="206">Round ${Math.round(trainingSeries[trainingSeries.length - 1].round / 2)}</text><text x="704" y="206">Round ${trainingSeries[trainingSeries.length - 1].round}</text></g>`;
+}
+renderExperimentSummary();
+renderMockContributionSummary();
+renderTrend();
+syncLocalControl('noise');
+syncLocalControl('epoch');
+syncLocalControl('mode');
 </script>
 </body>
 </html>
